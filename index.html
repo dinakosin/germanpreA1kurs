@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lektion 1: Hallo! — Karteikarten</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root{
+    --bg:#fdf6ec; --bg2:#fef9f3; --accent:#f6a623; --accent2:#e8743b;
+    --good:#7ac74f; --card:#ffffff; --txt:#3a342e;
+  }
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,var(--bg),var(--bg2));
+    color:#3a342e; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:14px; overflow-x:hidden;
+  }
+  .wrap{width:100%; max-width:460px; display:flex; flex-direction:column; gap:12px;}
+  header h1{
+    font-size:2.1rem; margin:4px 0 0; text-align:left; font-weight:700;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  header p{ margin:2px 0; text-align:left; font-size:.78rem; color:#a89b88;}
+  .progress-outer{
+    width:100%; height:12px; background:rgba(232,116,59,.15);
+    border-radius:20px; overflow:hidden; margin-bottom:10px;
+  }
+  .progress-inner{
+    height:100%; width:4%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:20px; transition:width .4s ease;
+  }
+  .counter{ text-align:left; font-size:.82rem; color:#b0795a; font-weight:600; margin-bottom:24px; }
+  .scene{ width:100%; height:340px; perspective:1200px; margin-top:4px; }
+  .card{
+    width:100%; height:100%; position:relative;
+    transform-style:preserve-3d; transition:transform .5s; cursor:pointer;
+  }
+  .card.flipped{ transform:rotateY(180deg); }
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:22px; padding:22px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:14px; box-shadow:0 12px 30px rgba(232,116,59,.18);
+  }
+  .front{ background:var(--card); color:var(--txt); border:2px solid #f6e3cd; }
+  .back{ background:linear-gradient(160deg,#f6a623,#e8743b); color:#fff; transform:rotateY(180deg); }
+  .emoji{ font-size:3.4rem; line-height:1; }
+  .translation{ font-size:1.4rem; font-weight:700; }
+  .example{ font-size:1rem; color:#8c8074; font-style:italic; line-height:1.4;}
+  .back .word{ font-size:2rem; font-weight:800; letter-spacing:.5px; }
+  .blank{ display:inline-block; min-width:60px; }
+  .qlabel{ font-size:.72rem; text-transform:uppercase; letter-spacing:1px; opacity:.6; }
+  .question{ font-size:1.25rem; font-weight:700; line-height:1.4; }
+  .answer{ font-size:1.5rem; font-weight:800; }
+  .tap-hint{ font-size:.7rem; opacity:.45; margin-top:6px; }
+  .motivation{ background:linear-gradient(160deg,#7ac74f,#4ca832)!important; color:#fff; border:none!important; }
+  .motivation .emoji{ font-size:4rem; }
+  .motivation .translation{ font-size:1.4rem; }
+  .controls{ display:flex; gap:10px; justify-content:center; margin-top:24px;}
+  button{
+    flex:1; border:none; border-radius:14px; padding:13px 8px;
+    font-size:.92rem; font-weight:700; cursor:pointer; color:#fff;
+    background:rgba(232,116,59,.35); transition:transform .1s, background .2s;
+  }
+  button:active{ transform:scale(.95); }
+  button.primary{ background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+  button.shuffle{ background:rgba(246,166,35,.4); }
+  .review{ display:none; flex-direction:column; gap:14px; }
+  .review h2{ text-align:right; font-size:1rem; margin:0; color:#3a342e;}
+  .review p{ text-align:right; font-size:.82rem; color:#a89b88; margin:0; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .mini{
+    background:var(--card); color:var(--txt); border-radius:14px;
+    text-align:center; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:6px; cursor:pointer;
+    border:3px solid #f6e3cd; transition:.15s; min-height:110px; padding:10px 6px;
+  }
+  .mini .me{ font-size:1.5rem; }
+  .mini .mw{ font-size:.7rem; font-weight:700; line-height:1.15; word-break:break-word; hyphens:auto; overflow:hidden; }
+  .mini.selected{ border-color:#e8743b; transform:scale(.97); background:#fdeede; }
+  .final{ display:none; text-align:center; padding:30px 10px; }
+  .final .big{ font-size:3.5rem; }
+  .final h2{ font-size:1.4rem; margin:14px 0 6px; color:#3a342e;}
+  .final p{ color:#a89b88; font-size:.95rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Lektion 1: Hallo!</h1>
+    <p>Подготовка к уроку · Karteikarten (немецкий)</p>
+  </header>
+
+  <div id="study">
+    <div class="progress-outer"><div class="progress-inner" id="bar"></div></div>
+    <div class="counter">Осталось повторить: <span id="counter">1/50</span></div>
+    <div class="scene">
+      <div class="card" id="card" onclick="flip()">
+        <div class="face front" id="front"></div>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="shuffle" onclick="shuffleDeck()">🔀 Перемешать</button>
+      <button onclick="prevCard()">← Назад</button>
+      <button class="primary" onclick="nextCard()">Дальше →</button>
+    </div>
+  </div>
+
+  <div class="review" id="review">
+    <h2>Отметь сложные карточки</h2>
+    <p>Нажми на те слова, которые запомнились плохо. Сет <span id="setNum">1</span></p>
+    <div class="grid" id="grid"></div>
+    <div class="controls">
+      <button class="primary" onclick="iKnowAll()">✅ Помню все</button>
+      <button onclick="nextReviewSet()">Дальше →</button>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    <div class="big">🎉</div>
+    <h2>Ausgezeichnet! Отличная работа!</h2>
+    <p id="finalMsg"></p>
+    <div class="controls" style="margin-top:20px;">
+      <button class="primary" onclick="restart()">🔁 Начать заново</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const baseCards = [
+  {type:'word', emoji:'👋', tr:'Привет!', word:'Hallo!', ex:'_____ Ich bin Anna.'},
+  {type:'word', emoji:'🙋', tr:'Привет! (неформ.)', word:'Hi!', ex:'_____ Wie heißt du?'},
+  {type:'word', emoji:'👋', tr:'Пока!', word:'Tschüss!', ex:'_____ Bis morgen!'},
+  {type:'word', emoji:'❓', tr:'Как тебя зовут?', word:'Wie heißt du?', ex:'Hallo! _____'},
+  {type:'word', emoji:'📛', tr:'Меня зовут ...', word:'Ich heiße ...', ex:'_____ Anna.'},
+  {type:'word', emoji:'🙂', tr:'Я ... / I am ...', word:'Ich bin ...', ex:'_____ Tom.'},
+  {type:'word', emoji:'🌍', tr:'Откуда ты?', word:'Woher kommst du?', ex:'_____ — Aus Russland.'},
+  {type:'word', emoji:'🏠', tr:'Я из ...', word:'Ich komme aus ...', ex:'_____ Moskau.'},
+  {type:'word', emoji:'🇩🇪', tr:'Я из Германии.', word:'Ich komme aus Deutschland.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🇷🇺', tr:'Я из России.', word:'Ich komme aus Russland.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🇦🇹', tr:'Я из Австрии.', word:'Ich komme aus Österreich.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🏙️', tr:'Я из Берлина.', word:'Ich komme aus Berlin.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🏙️', tr:'Я из Мюнхена.', word:'Ich komme aus München.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🏙️', tr:'Я из Кёльна.', word:'Ich komme aus Köln.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🏙️', tr:'Я из Гамбурга.', word:'Ich komme aus Hamburg.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🏙️', tr:'Я из Москвы.', word:'Ich komme aus Moskau.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'🏙️', tr:'Я из Зальцбурга.', word:'Ich komme aus Salzburg.', ex:'Woher kommst du? — _____'},
+  {type:'word', emoji:'❓', tr:'Сколько тебе лет?', word:'Wie alt bist du?', ex:'_____ — Ich bin zwölf.'},
+  {type:'word', emoji:'🔟', tr:'Мне десять лет.', word:'Ich bin zehn Jahre alt.', ex:'Wie alt bist du? — _____'},
+  {type:'word', emoji:'1️⃣2️⃣', tr:'Мне двенадцать лет.', word:'Ich bin zwölf Jahre alt.', ex:'Wie alt bist du? — _____'},
+  {type:'word', emoji:'1️⃣4️⃣', tr:'Мне четырнадцать лет.', word:'Ich bin vierzehn Jahre alt.', ex:'Wie alt bist du? — _____'},
+  {type:'word', emoji:'1️⃣5️⃣', tr:'Мне пятнадцать лет.', word:'Ich bin fünfzehn Jahre alt.', ex:'Wie alt bist du? — _____'},
+  {type:'word', emoji:'🎂', tr:'лет (о возрасте) / ... years old', word:'Jahre alt', ex:'Ich bin zehn _____.'},
+  {type:'word', emoji:'🔟', tr:'десять', word:'zehn', ex:'8, 9, _____.'},
+  {type:'word', emoji:'1️⃣1️⃣', tr:'одиннадцать', word:'elf', ex:'zehn, _____, zwölf.'},
+  {type:'word', emoji:'1️⃣2️⃣', tr:'двенадцать', word:'zwölf', ex:'elf, _____, dreizehn.'},
+  {type:'word', emoji:'1️⃣3️⃣', tr:'тринадцать', word:'dreizehn', ex:'zwölf, _____, vierzehn.'},
+  {type:'word', emoji:'1️⃣4️⃣', tr:'четырнадцать', word:'vierzehn', ex:'dreizehn, _____, fünfzehn.'},
+  {type:'word', emoji:'1️⃣5️⃣', tr:'пятнадцать', word:'fünfzehn', ex:'vierzehn, _____, sechzehn.'},
+  {type:'word', emoji:'❓', tr:'Тебе тринадцать?', word:'Bist du dreizehn?', ex:'_____ — Ja.'},
+  {type:'word', emoji:'❓', tr:'Тебе двенадцать?', word:'Bist du zwölf?', ex:'_____ — Nein.'},
+  {type:'word', emoji:'✅', tr:'Да.', word:'Ja.', ex:'Bist du zwölf? — _____'},
+  {type:'word', emoji:'❌', tr:'Нет.', word:'Nein.', ex:'Bist du dreizehn? — _____'},
+  {type:'word', emoji:'🇩🇪', tr:'Германия', word:'Deutschland', ex:'Berlin ist in _____.'},
+  {type:'word', emoji:'🇷🇺', tr:'Россия', word:'Russland', ex:'Moskau ist in _____.'},
+  {type:'word', emoji:'🇦🇹', tr:'Австрия', word:'Österreich', ex:'Salzburg ist in _____.'},
+  {type:'word', emoji:'🏛️', tr:'Берлин', word:'Berlin', ex:'_____ ist die Hauptstadt.'},
+  {type:'word', emoji:'🍺', tr:'Мюнхен', word:'München', ex:'Ich komme aus _____.'},
+  {type:'word', emoji:'⛪', tr:'Кёльн', word:'Köln', ex:'Der Dom ist in _____.'},
+  {type:'word', emoji:'⚓', tr:'Гамбург', word:'Hamburg', ex:'Ich komme aus _____.'},
+  {type:'word', emoji:'🏰', tr:'Москва', word:'Moskau', ex:'Ich komme aus _____.'},
+  {type:'word', emoji:'🎼', tr:'Зальцбург', word:'Salzburg', ex:'Mozart kommt aus _____.'},
+  {type:'word', emoji:'🗣️', tr:'говорить', word:'sprechen', ex:'Wir _____ Deutsch.'},
+  {type:'word', emoji:'👀', tr:'читать', word:'lesen', ex:'Bitte _____ den Text.'},
+  {type:'word', emoji:'👂', tr:'слушать', word:'hören zu', ex:'_____ bitte _____!'},
+  {type:'word', emoji:'✍️', tr:'делать', word:'machen', ex:'Was _____ wir jetzt?'},
+  {type:'word', emoji:'💻', tr:'интерактивные упражнения', word:'interaktive Übungen', ex:'Wir machen _____.'},
+  {type:'word', emoji:'🧠', tr:'викторина', word:'das Quiz', ex:'Wir spielen ein _____.'},
+  {type:'word', emoji:'🏙️👑', tr:'столица', word:'die Hauptstadt', ex:'Die _____ von Russland ist Moskau.'},
+  {type:'word', emoji:'📒', tr:'домашнее задание', word:'die Hausaufgaben', ex:'Mach deine _____!'},
+  {type:'grammar', emoji:'📛', q:'Как сказать «Меня зовут Анна»?', a:'Ich heiße Anna.'},
+  {type:'grammar', emoji:'🏠', q:'Как сказать «Я из Москвы»?', a:'Ich komme aus Moskau.'},
+  {type:'grammar', emoji:'🎂', q:'Как сказать «Мне двенадцать лет»?', a:'Ich bin zwölf Jahre alt.'},
+  {type:'grammar', emoji:'❓', q:'Как спросить «Как тебя зовут?»', a:'Wie heißt du?'},
+  {type:'grammar', emoji:'🌍', q:'Как спросить «Откуда ты?»', a:'Woher kommst du?'},
+  {type:'grammar', emoji:'❓', q:'Как спросить «Сколько тебе лет?»', a:'Wie alt bist du?'},
+  {type:'grammar', emoji:'🔤', q:'Что значит ß (Eszett) и как читается, напр. в heißt?', a:'Это "сс" — острый звук [с]. heißt = "хайст".'},
+  {type:'grammar', emoji:'🔊', q:'Как читается ö в словах Köln, Österreich, zwölf?', a:'Округли губы как для «о», но говори «э» → [ё].'},
+  {type:'grammar', emoji:'🔊', q:'Как читается ü в словах Tschüss, München, fünfzehn?', a:'Округли губы как для «у», но говори «и» → [ю].'},
+  {type:'grammar', emoji:'🔠', q:'С какой буквы пишутся существительные в немецком?', a:'Всегда с БОЛЬШОЙ буквы: der Rucksack.'},
+];
+
+const motivations = [
+  {emoji:'🔥', text:'15 карточек позади! Du bist toll — продолжай!'},
+  {emoji:'🚀', text:'30 карточек! Super gemacht!'},
+  {emoji:'💪', text:'40 карточек! Уже больше половины — отличный темп!'},
+  {emoji:'🏆', text:'55 карточек! Ты знаешь всё больше — Klasse!'},
+  {emoji:'🌟', text:'65 карточек! Финишная прямая, du schaffst das!'}
+];
+const motivAfter = [15,30,40,55,65];
+
+let deck = [];
+let idx = 0;
+let isFlipped = false;
+let hardCards = [];
+let reviewSets = [];
+let curReviewSet = 0;
+let viewTimerStart = 0;
+let insertedMotiv = [];
+
+const front = document.getElementById('front');
+const back  = document.getElementById('back');
+const cardEl= document.getElementById('card');
+const bar   = document.getElementById('bar');
+const counterEl = document.getElementById('counter');
+
+function buildDeck(){
+  return baseCards.map((c,i)=>({...c, _orig:i, longViewed:false}));
+}
+
+function init(){
+  deck = buildDeck();
+  idx = 0; hardCards=[]; isFlipped=false; insertedMotiv=[];
+  document.getElementById('study').style.display='block';
+  document.getElementById('review').style.display='none';
+  document.getElementById('final').style.display='none';
+  showCard();
+}
+
+function renderFace(c){
+  if(c.type==='motivation'){
+    front.className='face front motivation';
+    back.className='face back motivation';
+    front.innerHTML = `<div class="emoji">${c.emoji}</div><div class="translation">${c.text}</div><div class="tap-hint">нажми «Дальше»</div>`;
+    back.innerHTML = front.innerHTML;
+    return;
+  }
+  front.className='face front';
+  back.className='face back';
+  if(c.type==='word'){
+    const ex = c.ex.replace(/_____/g, '<span class="blank">_____</span>');
+    front.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="translation">${c.tr}</div>
+      <div class="example">${ex}</div>
+      <div class="tap-hint">нажми, чтобы увидеть слово</div>`;
+    back.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="word">${c.word}</div>`;
+  } else {
+    front.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="qlabel">Grammatik · Шаблон</div>
+      <div class="question">${c.q}</div>
+      <div class="tap-hint">нажми, чтобы увидеть ответ</div>`;
+    back.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="answer">${c.a}</div>`;
+  }
+}
+
+function showCard(){
+  isFlipped=false;
+  cardEl.classList.remove('flipped');
+  const c = deck[idx];
+  renderFace(c);
+  updateProgress();
+  viewTimerStart = Date.now();
+}
+
+function updateProgress(){
+  const pct = Math.round(((idx+1)/deck.length)*100);
+  bar.style.width = pct + '%';
+  counterEl.textContent = (idx+1) + '/' + deck.length;
+}
+
+function flip(){
+  const c = deck[idx];
+  if(c.type==='motivation') return;
+  isFlipped = !isFlipped;
+  cardEl.classList.toggle('flipped', isFlipped);
+}
+
+function markLongView(){
+  const c = deck[idx];
+  if(c.type==='motivation') return;
+  const elapsed = Date.now() - viewTimerStart;
+  if(elapsed > 6000 && !c.longViewed){
+    c.longViewed = true;
+    if(!hardCards.find(h=>h._orig===c._orig && h.type===c.type)){
+      hardCards.push(c);
+    }
+  }
+}
+
+function nextCard(){
+  markLongView();
+  if(idx < deck.length-1){
+    idx++;
+    maybeInsertMotivation();
+    showCard();
+  } else {
+    startReview();
+  }
+}
+
+function prevCard(){
+  if(idx > 0){
+    idx--;
+    showCard();
+  }
+}
+
+function maybeInsertMotivation(){
+  const realIndex = deck.slice(0, idx+1).filter(x=>x.type!=='motivation').length;
+  const mi = motivAfter.indexOf(realIndex);
+  if(mi !== -1 && !insertedMotiv.includes(mi) && deck[idx].type!=='motivation'){
+    insertedMotiv.push(mi);
+    deck.splice(idx, 0, {type:'motivation', ...motivations[mi]});
+  }
+}
+
+function shuffleDeck(){
+  const cards = deck.filter(c=>c.type!=='motivation');
+  for(let i=cards.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [cards[i],cards[j]]=[cards[j],cards[i]];
+  }
+  deck = cards;
+  idx = 0;
+  insertedMotiv = [];
+  showCard();
+}
+
+/* ============ REVIEW ============ */
+function startReview(){
+  markLongView();
+
+  // Берём ВСЕ карточки (слова + грамматику), без мотивационных
+  let pool = deck.filter(c => c.type === 'word' || c.type === 'grammar');
+
+  // Убираем дубликаты
+  const seen = new Set();
+  pool = pool.filter(c=>{
+    const k = c.type + '_' + c._orig;
+    if(seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+
+  // Разбиваем по 8 карточек в сет
+  reviewSets = [];
+  for(let i=0;i<pool.length;i+=8){
+    reviewSets.push(pool.slice(i,i+8));
+  }
+
+  if(reviewSets.length===0){ showFinal(); return; }
+
+  curReviewSet = 0;
+  window._stillHard = [];           // очищаем перед новым повтором
+  document.getElementById('study').style.display='none';
+  document.getElementById('review').style.display='flex';
+  document.getElementById('final').style.display='none';
+  renderReviewSet();
+}
+
+function renderReviewSet(){
+  const grid = document.getElementById('grid');
+  document.getElementById('setNum').textContent = (curReviewSet+1)+'/'+reviewSets.length;
+  grid.innerHTML='';
+  reviewSets[curReviewSet].forEach((c)=>{
+    const div = document.createElement('div');
+    div.className='mini';
+    const label = c.type==='word' ? c.word : c.a;
+    const emo = c.emoji || '📝';
+    div.innerHTML = `<div class="me">${emo}</div><div class="mw">${label}</div>`;
+    div.onclick = ()=> div.classList.toggle('selected');
+    grid.appendChild(div);
+  });
+}
+
+function iKnowAll(){
+  document.querySelectorAll('#grid .mini').forEach(m=>m.classList.remove('selected'));
+  nextReviewSet();
+}
+
+function nextReviewSet(){
+  const minis = document.querySelectorAll('#grid .mini');
+  const stillHard = [];
+  minis.forEach((m,i)=>{
+    if(m.classList.contains('selected')){
+      stillHard.push(reviewSets[curReviewSet][i]);
+    }
+  });
+  window._stillHard = (window._stillHard||[]).concat(stillHard);
+
+  if(curReviewSet < reviewSets.length-1){
+    curReviewSet++;
+    renderReviewSet();
+  } else {
+    showFinal();
+  }
+}
+
+/* ============ FINAL ============ */
+function showFinal(){
+  document.getElementById('study').style.display='none';
+  document.getElementById('review').style.display='none';
+  document.getElementById('final').style.display='block';
+  bar.style.width='100%';
+
+  const hard = window._stillHard || [];
+  const finalMsg = document.getElementById('finalMsg');
+  if(hard.length===0){
+    finalMsg.innerHTML = 'Ты прошла все карточки урока 1! <br>Wunderbar — теперь можно строить диалоги. 🥳';
+  } else {
+    const list = hard.map(c=> c.type==='word'? c.word : c.a).join(', ');
+    finalMsg.innerHTML = `Ты прошла весь набор! 🌟<br><br>
+      <b>Стоит повторить ещё раз (${hard.length}):</b><br>
+      <span style="color:#e8743b;font-weight:600;">${list}</span>`;
+  }
+}
+
+function restart(){
+  window._stillHard = [];
+  insertedMotiv = [];
+  init();
+}
+
+/* ============ KEYBOARD ============ */
+document.addEventListener('keydown', e=>{
+  if(document.getElementById('study').style.display==='none') return;
+  if(e.code==='Space'){ e.preventDefault(); flip(); }
+  if(e.code==='ArrowRight'){ nextCard(); }
+  if(e.code==='ArrowLeft'){ prevCard(); }
+});
+
+/* ============ SWIPE (mobile) ============ */
+let touchX=0, touchY=0;
+cardEl.addEventListener('touchstart', e=>{
+  touchX=e.touches[0].clientX; touchY=e.touches[0].clientY;
+}, {passive:true});
+cardEl.addEventListener('touchend', e=>{
+  const dx=e.changedTouches[0].clientX-touchX;
+  const dy=e.changedTouches[0].clientY-touchY;
+  if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)){
+    if(dx<0) nextCard(); else prevCard();
+  }
+}, {passive:true});
+
+/* ============ START ============ */
+window._stillHard = [];
+init();
+</script>
+</body>
+</html>
