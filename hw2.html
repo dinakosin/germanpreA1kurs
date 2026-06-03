@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lektion 1: Hallo! — Hausaufgabe</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root{
+    --bg:#fdf6ec; --bg2:#fef9f3; --accent:#f6a623; --accent2:#e8743b;
+    --good:#7ac74f; --bad:#e05b4a; --card:#ffffff; --txt:#3a342e;
+  }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,var(--bg),var(--bg2));
+    color:var(--txt); min-height:100vh; padding:14px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .wrap{ width:100%; max-width:480px; }
+  header h1{
+    font-size:1.9rem; margin:4px 0 0; font-weight:700;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  header p{ margin:2px 0 16px; font-size:.78rem; color:#a89b88; }
+
+  .task{
+    background:var(--card); border-radius:18px; padding:18px 16px;
+    margin-bottom:16px; box-shadow:0 8px 22px rgba(232,116,59,.12);
+    border:2px solid #f6e3cd;
+  }
+  .task-head{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .task-num{
+    flex-shrink:0; width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center;
+    font-size:1rem;
+  }
+  .task-title{ font-size:1.05rem; font-weight:700; }
+  .task-desc{ font-size:.82rem; color:#a89b88; margin:0 0 14px; line-height:1.4; }
+
+  .q{ margin-bottom:14px; }
+  .q-text{ font-size:.95rem; font-weight:600; margin-bottom:8px; line-height:1.4; }
+  .q-text .ru{ color:#b0795a; font-weight:500; font-size:.85rem; }
+
+  input[type=text]{
+    width:100%; padding:11px 12px; border-radius:11px; font-size:1rem;
+    border:2px solid #f0e0cb; background:#fffdf9; color:var(--txt);
+    transition:border .2s; font-family:inherit;
+  }
+  input[type=text]:focus{ outline:none; border-color:var(--accent); }
+  input.correct{ border-color:var(--good); background:#f1faec; }
+  input.wrong{ border-color:var(--bad); background:#fdecea; }
+
+  .options{ display:flex; flex-direction:column; gap:8px; }
+  .opt{
+    padding:11px 14px; border-radius:11px; border:2px solid #f0e0cb;
+    background:#fffdf9; cursor:pointer; font-size:.95rem; transition:.15s;
+  }
+  .opt.selected{ border-color:var(--accent); background:#fdeede; }
+  .opt.correct{ border-color:var(--good); background:#f1faec; }
+  .opt.wrong{ border-color:var(--bad); background:#fdecea; }
+
+  .feedback{ font-size:.82rem; margin-top:6px; font-weight:600; display:none; }
+  .feedback.show{ display:block; }
+  .feedback.ok{ color:var(--good); }
+  .feedback.no{ color:var(--bad); }
+
+  .check-btn{
+    width:100%; border:none; border-radius:12px; padding:12px;
+    font-size:.95rem; font-weight:700; color:#fff; cursor:pointer;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:transform .1s;
+  }
+  .check-btn:active{ transform:scale(.97); }
+
+  .dialog{
+    background:#fff7ee; border-radius:12px; padding:12px 14px;
+    margin-bottom:12px; font-size:.92rem; line-height:1.7; border:1px dashed #e8b98a;
+  }
+  .dialog b{ color:#e8743b; }
+
+  .score-box{
+    background:linear-gradient(160deg,#7ac74f,#4ca832); color:#fff;
+    border-radius:18px; padding:22px; text-align:center; display:none;
+    box-shadow:0 10px 26px rgba(122,199,79,.3);
+  }
+  .score-box.show{ display:block; }
+  .score-box .big{ font-size:3rem; }
+  .score-box h2{ margin:8px 0 4px; }
+
+  .final-check{
+    width:100%; border:none; border-radius:14px; padding:15px;
+    font-size:1.05rem; font-weight:800; color:#fff; cursor:pointer;
+    background:linear-gradient(90deg,#7ac74f,#4ca832); margin:6px 0 30px;
+  }
+  .hint-letters{ font-size:.78rem; color:#b0795a; margin-top:4px; font-style:italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Lektion 2: Wie geht's?!</h1>
+    <p>Die Hausaufgabe 2</p>
+  </header>
+
+  <!-- ===== TASK 1: ФОРМА (правописание) ===== -->
+  <div class="task">
+    <div class="task-head">
+      <div class="task-num">1</div>
+      <div class="task-title">Schreib richtig! · Правописание</div>
+    </div>
+    <p class="task-desc">Вставь пропущенные буквы (ä, ö, ü, ß) и запиши слово правильно.</p>
+
+    <div class="q">
+      <div class="q-text">1. Как тебя зовут? — Wie h___t du? <span class="ru"></span></div>
+      <input type="text" data-answer="heißt" placeholder="">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-text">2. Пять — f___f <span class="ru"></span></div>
+      <input type="text" data-answer="fünf" placeholder="">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-text">3. Двенадцать — zw___f <span class="ru"></span></div>
+      <input type="text" data-answer="zwölf" placeholder="">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-text">4. Пока! — Tsch___s! <span class="ru"></span></div>
+      <input type="text" data-answer="tschüss" placeholder="">
+      <div class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- ===== TASK 2: ЗНАЧЕНИЕ (перевод/соответствие) ===== -->
+  <div class="task">
+    <div class="task-head">
+      <div class="task-num">2</div>
+      <div class="task-title">Was bedeutet das? · Значение</div>
+    </div>
+    <p class="task-desc">Выбери правильный перевод немецкой фразы.</p>
+
+    <div class="q" data-type="choice" data-answer="Откуда ты?">
+      <div class="q-text">1. Woher kommst du?</div>
+      <div class="options">
+        <div class="opt">Как тебя зовут?</div>
+        <div class="opt">Откуда ты?</div>
+        <div class="opt">Сколько тебе лет?</div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-type="choice" data-answer="Как дела?">
+      <div class="q-text">2.Wie geht's?</div>
+      <div class="options">
+        <div class="opt">Кто там?</div>
+        <div class="opt">Как дела?</div>
+        <div class="opt">Я устал.</div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-type="choice" data-answer="Мне двенадцать лет.">
+      <div class="q-text">3. Ich bin zwölf Jahre alt.</div>
+      <div class="options">
+        <div class="opt">Я из Москвы.</div>
+        <div class="opt">Меня зовут Том.</div>
+        <div class="opt">Мне двенадцать лет.</div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-type="choice" data-answer="Я не знаю.">
+      <div class="q-text">4.Ich weiß nicht.</div>
+      <div class="options">
+        <div class="opt">Я знаю.</div>
+        <div class="opt">Я не знаю.</div>
+        <div class="opt">Я здесь.</div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- ===== TASK 3: УПОТРЕБЛЕНИЕ (закончи реплики диалога) ===== -->
+  <div class="task">
+    <div class="task-head">
+      <div class="task-num">3</div>
+      <div class="task-title">Ergänze den Dialog · Закончи диалог</div>
+    </div>
+    <p class="task-desc">Прочитай диалог и впиши подходящие реплики. Отвечай по-немецки.</p>
+
+    <div class="dialog">
+      <b>Anna:</b> Hallo! Wie heißt du?<br>
+      <b>Du:</b> <span style="color:#a89b88"></span>
+    </div>
+    <div class="q">
+      <input type="text" data-answer-contains="ich heiße|mein name ist" placeholder="Ich ...">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="dialog">
+      <b>Anna:</b> Woher kommst du?<br>
+      <b>Du:</b> <span style="color:#a89b88"></span>
+    </div>
+    <div class="q">
+      <input type="text" data-answer-contains="ich komme aus" placeholder="...">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="dialog">
+      <b>Anna:</b> Wie geht's?<br>
+      <b>Du:</b> <span style="color:#a89b88">(ответь, как у тебя дела, и спроси Анну)</span>
+    </div>
+    <div class="q">
+      <input type="text" data-answer-contains="mir geht" placeholder="...">
+      <div class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- ===== TASK 4: АУДИРОВАНИЕ (слушай и отвечай) ===== -->
+  <div class="task">
+    <div class="task-head">
+      <div class="task-num">4</div>
+      <div class="task-title">Hör zu und antworte · Слушай и отвечай</div>
+    </div>
+    <p class="task-desc">Нажми 🔊, чтобы услышать вопрос. Затем впиши ответ по-немецки.</p>
+
+    <div class="q">
+      <button class="check-btn" style="margin-bottom:10px;background:rgba(232,116,59,.4)"
+        onclick="speak('Wie alt bist du?')">🔊 Frage 1 anhören</button>
+      <div class="q-text">Ответь на услышанный вопрос: <span class="ru"></span></div>
+      <input type="text" data-answer-contains="ich bin" placeholder="...">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q">
+      <button class="check-btn" style="margin-bottom:10px;background:rgba(232,116,59,.4)"
+        onclick="speak('Wer ist da?')">🔊 Frage 2 anhören</button>
+      <div class="q-text">Ответь на услышанный вопрос: <span class="ru"></span></div>
+      <input type="text" data-answer-contains="ich bin da|ich bin" placeholder="...">
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q">
+      <button class="check-btn" style="margin-bottom:10px;background:rgba(232,116,59,.4)"
+        onclick="speak('Bist du müde?')">🔊 Frage 3 anhören</button>
+      <div class="q-text">Запиши, что ты услышал(а): <span class="ru"></span></div>
+      <input type="text" data-answer="bist du müde" placeholder="...">
+      <div class="feedback"></div>
+    </div>
+  </div>
+
+  <button class="final-check" onclick="checkAll()">✅ Проверить всё задание</button>
+
+  <div class="score-box" id="scoreBox">
+    <div class="big">🎉</div>
+    <h2 id="scoreTitle"></h2>
+    <p id="scoreText"></p>
+  </div>
+</div>
+
+<script>
+/* ===== Озвучка вопросов (Web Speech API) ===== */
+function speak(text){
+  if(!('speechSynthesis' in window)){
+    alert('Озвучка не поддерживается в этом браузере 😕');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'de-DE';
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+/* ===== Нормализация текста для сравнения ===== */
+function norm(s){
+  return s.toLowerCase()
+    .replace(/[.,!?;:]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+/* ===== Выбор вариантов (задание 2) ===== */
+document.querySelectorAll('.q[data-type="choice"]').forEach(q=>{
+  q.querySelectorAll('.opt').forEach(opt=>{
+    opt.onclick = ()=>{
+      q.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+    };
+  });
+});
+
+/* ===== Проверка одного текстового поля ===== */
+function checkInput(input){
+  const fb = input.parentElement.querySelector('.feedback');
+  const val = norm(input.value);
+  if(!val){
+    input.classList.remove('correct','wrong');
+    if(fb){ fb.className='feedback'; }
+    return false;
+  }
+  let ok = false;
+
+  if(input.dataset.answer){
+    ok = (val === norm(input.dataset.answer));
+  } else if(input.dataset.answerContains){
+    const variants = input.dataset.answerContains.split('|');
+    ok = variants.some(v => val.includes(norm(v)));
+  }
+
+  input.classList.toggle('correct', ok);
+  input.classList.toggle('wrong', !ok);
+  if(fb){
+    fb.className = 'feedback show ' + (ok ? 'ok' : 'no');
+    if(ok){
+      fb.textContent = '✅ Richtig! Правильно!';
+    } else {
+      const ans = input.dataset.answer || input.dataset.answerContains.split('|')[0];
+      fb.textContent = '❌ Попробуй ещё. Образец: «' + ans + '»';
+    }
+  }
+  return ok;
+}
+
+/* ===== Проверка одного вопроса с вариантами ===== */
+function checkChoice(q){
+  const correct = norm(q.dataset.answer);
+  const selected = q.querySelector('.opt.selected');
+  const fb = q.querySelector('.feedback');
+  let ok = false;
+
+  q.querySelectorAll('.opt').forEach(o=>{
+    o.classList.remove('correct','wrong');
+    if(norm(o.textContent) === correct) o.classList.add('correct');
+  });
+
+  if(!selected){
+    if(fb){ fb.className='feedback show no'; fb.textContent='❌ Выбери вариант!'; }
+    return false;
+  }
+  ok = (norm(selected.textContent) === correct);
+  if(!ok) selected.classList.add('wrong');
+  if(fb){
+    fb.className = 'feedback show ' + (ok ? 'ok' : 'no');
+    fb.textContent = ok ? '✅ Richtig! Правильно!' : '❌ Неверно. Смотри зелёный вариант.';
+  }
+  return ok;
+}
+
+/* ===== Проверка ВСЕГО задания ===== */
+function checkAll(){
+  let total = 0, correct = 0;
+
+  // текстовые поля
+  document.querySelectorAll('input[type=text]').forEach(inp=>{
+    total++;
+    if(checkInput(inp)) correct++;
+  });
+
+  // варианты
+  document.querySelectorAll('.q[data-type="choice"]').forEach(q=>{
+    total++;
+    if(checkChoice(q)) correct++;
+  });
+
+  const box = document.getElementById('scoreBox');
+  const pct = Math.round(correct/total*100);
+  box.classList.add('show');
+
+  let title, text;
+  if(pct === 100){
+    title = 'Perfekt! 🏆';
+    text = `Ты ответил(а) правильно на все ${total} заданий! Ausgezeichnet!`;
+  } else if(pct >= 70){
+    title = 'Sehr gut! 😄';
+    text = `Правильно: ${correct} из ${total} (${pct}%). Почти идеально — поправь красные поля!`;
+  } else if(pct >= 40){
+    title = 'Gut gemacht! 💪';
+    text = `Правильно: ${correct} из ${total} (${pct}%). Посмотри образцы и попробуй ещё раз!`;
+  } else {
+    title = 'Weiter üben! 📚';
+    text = `Правильно: ${correct} из ${total} (${pct}%). Повтори карточки и попробуй снова — du schaffst das!`;
+  }
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreText').textContent = text;
+
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* проверка по Enter в текстовых полях */
+document.querySelectorAll('input[type=text]').forEach(inp=>{
+  inp.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ checkInput(inp); }
+  });
+});
+</script>
+</body>
+</html>
