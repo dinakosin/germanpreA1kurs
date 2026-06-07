@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Lektion 1: Hallo! — Karteikarten</title>
+<title>Lektion 2: Wer kommt zur Party? — Karteikarten</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root{
@@ -146,7 +146,39 @@ const baseCards = [
   {type:'word', emoji:'1️⃣3️⃣', tr:'тринадцать', word:'dreizehn', ex:'zwölf, _____, vierzehn.'},
   {type:'word', emoji:'1️⃣4️⃣', tr:'четырнадцать', word:'vierzehn', ex:'dreizehn, _____, fünfzehn.'},
   {type:'word', emoji:'1️⃣5️⃣', tr:'пятнадцать', word:'fünfzehn', ex:'vierzehn, _____, sechzehn.'},
+  /* ===== УРОК 2: МЕСТО ЖИТЕЛЬСТВА ===== */
+  {type:'word', emoji:'🏡', tr:'Где ты живёшь?', word:'Wo wohnst du?', ex:'_____ — In München.'},
+  {type:'word', emoji:'🏘️', tr:'Я живу в ...', word:'Ich wohne in ...', ex:'_____ München.'},
+  {type:'word', emoji:'➕', tr:'тоже / также', word:'auch', ex:'Ich wohne _____ in München!'},
 
+  /* ===== УРОК 2: МЕСТА ===== */
+  {type:'word', emoji:'🏫', tr:'школа', word:'die Schule', ex:'Was ist das? — Das ist _____.'},
+  {type:'word', emoji:'🌳', tr:'парк', word:'der Park', ex:'Was ist das? — Das ist _____.'},
+  {type:'word', emoji:'🎉', tr:'вечеринка', word:'die Party', ex:'Das ist eine _____!'},
+  {type:'word', emoji:'🦁', tr:'зоопарк', word:'der Zoo', ex:'Was ist das? — Das ist _____.'},
+  {type:'word', emoji:'🎲', tr:'игра', word:'das Spiel', ex:'Was ist das? — Das ist _____.'},
+
+  /* ===== УРОК 2: PARTY ===== */
+  {type:'word', emoji:'💌', tr:'приглашение', word:'die Einladung', ex:'Das ist eine _____ für die Party.'},
+  {type:'word', emoji:'🥳', tr:'Приходи на нашу вечеринку!', word:'Komm zu unserer Party!', ex:'Bist du 11-14? Dann _____'},
+  {type:'word', emoji:'📓', tr:'книга друзей', word:'das Freundebuch', ex:'Wir machen ein _____.'},
+
+  /* ===== УРОК 2: МНОЖ. ЧИСЛО (sind) ===== */
+  {type:'word', emoji:'👫', tr:'они здесь', word:'sie sind da', ex:'Anna und Thomas _____.'},
+  {type:'word', emoji:'✅', tr:'... здесь (есть)', word:'... ist da', ex:'Paul _____.'},
+  {type:'word', emoji:'❌', tr:'... здесь нет', word:'... ist nicht da', ex:'Felix _____.'},
+
+  /* ===== УРОК 2: ГОРОДА ===== */
+  {type:'word', emoji:'🏙️', tr:'Мюнхен', word:'München', ex:'Ich wohne in _____.'},
+  {type:'word', emoji:'🌆', tr:'Гамбург', word:'Hamburg', ex:'Ich wohne in _____.'},
+  {type:'word', emoji:'🏰', tr:'Кёльн', word:'Köln', ex:'Ich wohne in _____.'},
+
+  /* ===== УРОК 2: ГРАММАТИКА / ШАБЛОНЫ ===== */
+  {type:'grammar', emoji:'🏡', q:'Как спросить «Где ты живёшь?»', a:'Wo wohnst du?'},
+  {type:'grammar', emoji:'🏘️', q:'Как сказать «Я живу в Берлине»?', a:'Ich wohne in Berlin.'},
+  {type:'grammar', emoji:'👫', q:'Как сказать «Анна и Том здесь»? (мн.ч.)', a:'Anna und Tom sind da. (sind — мн.ч.!)'},
+  {type:'grammar', emoji:'🎉', q:'Кто может прийти на Party? (правило)', a:'11-14 Jahre alt UND in München wohnen.'},
+  {type:'grammar', emoji:'➕', q:'Где стоит «auch» (тоже)? «Я тоже живу в Бонне»', a:'Ich wohne auch in Bonn.'},
   /* ===== ПРИВЕТСТВИЯ И ПРОЩАНИЯ ===== */
   {type:'word', emoji:'☀️', tr:'Добрый день!', word:'Guten Tag!', ex:'_____ Ich heiße Anna.'},
   {type:'word', emoji:'🙋', tr:'Привет! (неформ.)', word:'Hi!', ex:'_____ Wie geht\'s?'},
@@ -434,8 +466,8 @@ function showFinal(){
   document.getElementById('final').style.display='block';
   const total = baseCards.length;
   document.getElementById('finalMsg').textContent =
-    `Ты повторил(а) все ${total} карточек по теме «Hallo!». ` +
-    `Числа, приветствия, вопросы и ответы — alles klar! Tschüss! 👋`;
+    `Ты повторил(а) все ${total} карточек по темам «Hallo!» и «Party». ` +
+    `Числа, приветствия, вопросы, wohnen и Freundebuch — alles klar! Tschüss! 👋`;
 }
 
 function restart(){
