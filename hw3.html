@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsch – Wiederholung (Lektion 1 & 2)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+    background: #f0f7ff;
+    color: #2b2b40;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  h1 {
+    text-align: center;
+    color: #ff6b6b;
+    text-shadow: 1px 1px #ffd;
+  }
+  .subtitle { text-align:center; color:#555; margin-top:-10px; }
+  .section {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 25px;
+    margin: 22px auto;
+    max-width: 760px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-left: 8px solid #4dabf7;
+  }
+  .section h2 {
+    color: #1c7ed6;
+    margin-top: 0;
+  }
+  .tag { font-size:.8em; background:#4dabf7; color:#fff; padding:2px 8px; border-radius:10px; }
+  .task { margin: 14px 0; }
+  input[type="text"] {
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 1em;
+    font-family: inherit;
+  }
+  input.short { width: 110px; }
+  input.med { width: 180px; }
+  button {
+    background: #ff922b;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+  }
+  button:hover { background: #f76707; }
+  .feedback { font-weight:bold; margin-left:10px; }
+  .ok { color: #2f9e44; }
+  .no { color: #e03131; }
+  ul.dialog { list-style:none; padding-left:0; }
+  ul.dialog li { margin:6px 0; }
+  select {
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    padding: 5px;
+    font-family: inherit;
+    font-size: .95em;
+  }
+  /* Notebook page */
+  .notebook {
+    background: repeating-linear-gradient(#fff, #fff 31px, #b3d9ff 32px);
+    border: 2px solid #ffd43b;
+    border-radius: 6px;
+    padding: 25px 25px 25px 60px;
+    position: relative;
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.15);
+    line-height: 32px;
+  }
+  .notebook::before {
+    content:"";
+    position:absolute;
+    left:40px; top:0; bottom:0;
+    width:2px; background:#ff8787;
+  }
+  .notebook h3 { color:#e64980; margin-top:0; }
+  .notebook input[type="text"] {
+    border:none;
+    border-bottom: 2px dashed #999;
+    border-radius:0;
+    background: transparent;
+    width: 60%;
+  }
+  table { border-collapse: collapse; width:100%; margin:10px 0; }
+  th, td { border:1px solid #adb5bd; padding:6px 10px; text-align:center; }
+  th { background:#d0ebff; }
+  .friend-card {
+    background:#fff9db;
+    border:2px dashed #f08c00;
+    border-radius:12px;
+    padding:12px 18px;
+    margin:14px 0;
+    line-height: 1.8;
+  }
+  .friend-card input { border-bottom:2px dashed #f08c00; background:transparent; border-top:none;border-left:none;border-right:none; }
+  .star { color:#fcc419; }
+  .hint { font-size:.85em; color:#868e96; font-style:italic; }
+</style>
+</head>
+<body>
+
+<h1>🎉 Wiederholung 🎉</h1>
+<p class="subtitle">Lektion 1: Kennenlernen &amp; Lektion 2: Wer kommt zur Party?</p>
+
+<!-- ================= 1. RECHTSCHREIBUNG ================= -->
+<div class="section">
+  <h2>1. Rechtschreibung <span class="tag">ie / ß / Wortschatz</span></h2>
+  <p>Schreib die Wörter richtig. Achte auf <b>ie</b>, <b>ß</b> und große Buchstaben!</p>
+
+  <div class="task">a) sp__len (играть) → 
+    <input type="text" class="short" id="s1" placeholder="">
+  </div>
+  <div class="task">b) Fu__ball (футбол) → 
+    <input type="text" class="short" id="s2" placeholder="">
+  </div>
+  <div class="task">c) hei__t (зовут) → 
+    <input type="text" class="short" id="s3">
+  </div>
+  <div class="task">d) v__rzehn (14) → 
+    <input type="text" class="short" id="s4">
+  </div>
+  <div class="task">e) Stra__e (улица) → 
+    <input type="text" class="short" id="s5">
+  </div>
+  <button onclick="checkSpelling()">Prüfen ✓</button>
+  <span id="spellFb" class="feedback"></span>
+</div>
+
+<!-- ================= 2. WORTSCHATZ ================= -->
+<div class="section">
+  <h2>2. Wortschatz <span class="tag">Begrüßung &amp; Wie geht's</span></h2>
+  <p>Wähle die passende Antwort. Wie geht's dem Smiley?</p>
+
+  <div class="task">😄 Mir geht's …
+    <select id="w1">
+      <option value="">--</option>
+      <option>super</option>
+      <option>so-so</option>
+      <option>nicht gut</option>
+    </select>
+  </div>
+  <div class="task">😐 Mir geht's …
+    <select id="w2">
+      <option value="">--</option>
+      <option>super</option>
+      <option>so-so</option>
+      <option>nicht gut</option>
+    </select>
+  </div>
+  <div class="task">😢 Mir geht's …
+    <select id="w3">
+      <option value="">--</option>
+      <option>super</option>
+      <option>so-so</option>
+      <option>nicht gut</option>
+    </select>
+  </div>
+  <p>Was passt NICHT zu einer Party? (что не подходит для вечеринки?)
+  <br> 
+  die Schule, der Park, die Party, der Zoo, das Spiel</p>
+  <input type="text" class="med" id="w4" placeholder="Schreib das Wort">
+  <br>
+  <button onclick="checkWords()">Prüfen ✓</button>
+  <span id="wordFb" class="feedback"></span>
+</div>
+
+<!-- ================= 3. KOMMUNIKATION ================= -->
+<div class="section">
+  <h2>3. Kommunikation <span class="tag">Dialog</span></h2>
+  <p>Ordne den Dialog. Wähle die richtige Reihenfolge (1–4).</p>
+  <ul class="dialog">
+    <li>
+      <select id="d1"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      – Ich komme aus Deutschland, aus Hamburg.
+    </li>
+    <li>
+      <select id="d2"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      – Hallo! Wie heißt du?
+    </li>
+    <li>
+      <select id="d3"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      – Woher kommst du?
+    </li>
+    <li>
+      <select id="d4"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      – Hi! Ich heiße Paul.
+    </li>
+  </ul>
+  <button onclick="checkDialog()">Prüfen ✓</button>
+  <span id="diaFb" class="feedback"></span>
+</div>
+
+<!-- ================= 4. LESEN ================= -->
+<div class="section">
+  <h2>4. Lesen <span class="tag">Wer kommt zur Party?</span></h2>
+  <p><b>Party-Regeln:</b> Du musst <u>zum elf bis vierzehn Jahre</u> alt sein UND in <u>Hamburg</u> wohnen.</p>
+  <table>
+    <tr><th>Name</th><th>Wohnort</th><th>Alter</th></tr>
+    <tr><td>Thomas</td><td>Hamburg</td><td>15</td></tr>
+    <tr><td>Monika</td><td>München</td><td>13</td></tr>
+    <tr><td>Paul</td><td>Hamburg</td><td>12</td></tr>
+    <tr><td>Anna</td><td>Hamburg</td><td>11</td></tr>
+  </table>
+  <p>Wer kommt zur Party? Schreib die Namen:</p>
+  <input type="text" class="med" id="r1" placeholder="Name 1">
+  <input type="text" class="med" id="r2" placeholder="Name 2">
+  <br>
+  <button onclick="checkRead()">Prüfen ✓</button>
+  <span id="readFb" class="feedback"></span>
+</div>
+
+<!-- ================= 6. FRAGEWÖRTER ================= -->
+<div class="section">
+  <h2>6. Fragewörter <span class="tag">wer · wie · woher · wo</span></h2>
+  <p>Was passt: <b>wer</b>, <b>wie</b>, <b>wie</b> oder <b>woher</b>? Ergänze die Fragewörter.</p>
+
+  <div class="task">
+    ■ Hi! <input type="text" class="short" id="f0" value="Wer" readonly style="background:#e6fcf5;"> (0) bist du?
+    <span class="hint">(Beispiel)</span>
+  </div>
+  <div class="task">
+    ● Ich bin Emil. Und 
+    <input type="text" class="short" id="fq1"> (1) heißt du?
+  </div>
+  <div class="task">
+    ■ Ich heiße Julia. 
+    <input type="text" class="short" id="fq2"> (2) kommst du?
+  </div>
+  <div class="task">
+    ● Ich komme aus Frankfurt. … Hallo! Und 
+    <input type="text" class="short" id="fq3"> (3) wohnst du?
+  </div>
+
+  <button onclick="checkFragewoerter()">Prüfen ✓</button>
+  <span id="fragFb" class="feedback"></span>
+</div>
+
+<!-- ================= 7. SCHREIBEN: E-MAIL ================= -->
+<div class="section">
+  <h2>7. Schreiben <span class="tag">E-Mail</span></h2>
+  <p>Katharina schreibt eine E-Mail an Luisa. Lies Katharinas Steckbrief
+     und schreib die E-Mail. <b>(Mindestens vier Sätze!)</b></p>
+
+  <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start;">
+    <!-- Steckbrief -->
+    <div style="background:#fff9db; border:2px dashed #f08c00; border-radius:14px; padding:14px 22px; line-height:1.9; min-width:130px;">
+      <b>Katharina</b><br>
+      12<br>
+      aus Deutschland<br> aus Bremen<br>
+      in Berlin
+    </div>
+
+    <!-- E-Mail Blatt -->
+    <div style="flex:1; min-width:280px; background:#fff; border:2px solid #adb5bd; border-radius:10px; padding:16px 20px; box-shadow:3px 3px 8px rgba(0,0,0,0.1);">
+      <p style="margin:0 0 8px;">Hallo Luisa,</p>
+      <div style="line-height:34px;">
+        ich heiße <input type="text" style="border:none;border-bottom:2px dashed #999;background:transparent;width:60%;"><br>
+        <input type="text" style="border:none;border-bottom:2px dashed #999;background:transparent;width:90%;"><br>
+        <input type="text" style="border:none;border-bottom:2px dashed #999;background:transparent;width:90%;"><br>
+        <input type="text" style="border:none;border-bottom:2px dashed #999;background:transparent;width:90%;"><br>
+        Und <input type="text" style="border:none;border-bottom:2px dashed #999;background:transparent;width:40%;">? 
+      </div>
+      <p style="margin:12px 0 0;">Viele Grüße<br>Katharina</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 5. TBL FREUNDEBUCH ================= -->
+<div class="section">
+  <h2>8. Mein Freundebuch <span class="tag">Projekt</span></h2>
+
+  <div class="notebook">
+    <h3>📓 Schritt 1: Schreib die Fragen</h3>
+    <p class="hint">Schreib 5 Fragen für dein Freundebuch (Name, Alter, Woher, Wohnort, настроение).</p>
+    1) <input type="text" id="q1"><br>
+    2) <input type="text" id="q2"><br>
+    3) <input type="text" id="q3"><br>
+    4) <input type="text" id="q4"><br>
+    5) <input type="text" id="q5"><br>
+  </div>
+
+  <p style="margin-top:20px;"><b>Schritt 2:</b> Jetzt bist du diese 3 Freunde! Füll die Karten aus.
+  Benutze die Tabelle: <span class="hint">(Name · Wohnort · Alter)</span></p>
+
+  <table>
+    <tr><th>Name</th><th>Wohnort</th><th>Alter</th><th>Wie geht's</th></tr>
+    <tr><td>Lukas</td><td>Hamburg</td><td>13</td><td>😄 super</td></tr>
+    <tr><td>Marianne</td><td>Salzburg</td><td>12</td><td>😐 so-so</td></tr>
+    <tr><td>Felix</td><td>München</td><td>14</td><td>🙂 gut</td></tr>
+  </table>
+
+  <div class="friend-card">
+    <span class="star">⭐ Freund 1</span><br>
+    Ich heiße <input type="text">.<br>
+    Ich bin <input type="text" class="short"> Jahre alt.<br>
+    Ich wohne in <input type="text">.<br>
+    Mir geht's <input type="text">.
+  </div>
+
+  <div class="friend-card">
+    <span class="star">⭐ Freund 2</span><br>
+    Ich <input type="text">.<br>
+    <input type="text" class="short"> Jahre alt.<br>
+     <input type="text">.<br>
+    Mir  <input type="text">.
+  </div>
+
+  <div class="friend-card">
+    <span class="star">⭐ Freund 3</span><br>
+     <input type="text">.<br>
+     <input type="text" class="short"> Jahre alt.<br>
+     <input type="text">.<br>
+    <input type="text">.
+  </div>
+
+<p style="text-align:center; color:#888;">Wer kommt zur Party in Hamburg? 🌞</p>
+
+<script>
+function mark(id, ok){
+  document.getElementById(id).className = "feedback " + (ok ? "ok" : "no");
+}
+function norm(s){ return s.trim().toLowerCase(); }
+
+function checkSpelling(){
+  const ans = ["spielen","fußball","heißt","vierzehn","straße"];
+  const ids = ["s1","s2","s3","s4","s5"];
+  let correct = 0;
+  ids.forEach((id,i)=>{
+    if(norm(document.getElementById(id).value)===ans[i]) correct++;
+  });
+  const fb = document.getElementById("spellFb");
+  fb.textContent = correct + "/5 richtig! " + (correct===5 ? "Super! 🎉" : "Versuch es nochmal 💪");
+  mark("spellFb", correct===5);
+}
+
+function checkWords(){
+  const ok = document.getElementById("w1").value==="super"
+    && document.getElementById("w2").value==="so-so"
+    && document.getElementById("w3").value==="nicht gut"
+    && norm(document.getElementById("w4").value).includes("schule");
+  const fb=document.getElementById("wordFb");
+  fb.textContent = ok ? "Alles richtig! 🌟" : "Schau nochmal genau hin 👀";
+  mark("wordFb", ok);
+}
+
+function checkDialog(){
+  const ok = document.getElementById("d1").value==="4"
+    && document.getElementById("d2").value==="1"
+    && document.getElementById("d3").value==="3"
+    && document.getElementById("d4").value==="2";
+  const fb=document.getElementById("diaFb");
+  fb.textContent = ok ? "Perfekter Dialog! 💬✅" : "Die Reihenfolge stimmt noch nicht 🤔";
+  mark("diaFb", ok);
+}
+
+function checkRead(){
+  const names = [norm(document.getElementById("r1").value), norm(document.getElementById("r2").value)];
+  const ok = names.includes("paul") && names.includes("anna");
+  const fb=document.getElementById("readFb");
+  fb.textContent = ok ? "Richtig! Paul & Anna kommen! 🥳" : "Tipp: 11–14 Jahre UND München!";
+  mark("readFb", ok);
+}
+
+function checkFragewoerter(){
+  const a1 = norm(document.getElementById("fq1").value); // wie
+  const a2 = norm(document.getElementById("fq2").value); // woher
+  const a3 = norm(document.getElementById("fq3").value); // wer
+  let correct = 0;
+  if(a1==="wie") correct++;
+  if(a2==="woher") correct++;
+  if(a3==="wo") correct++;
+  const fb = document.getElementById("fragFb");
+  fb.textContent = correct + "/3 richtig! " + (correct===3 ? "Super! 🎉" : "Probier es nochmal 💪");
+  mark("fragFb", correct===3);
+}
+</script>
+
+</body>
+</html>
