@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deutsch Hausaufgaben</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      color: #222;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c5f8a;
+      margin-bottom: 30px;
+      font-size: 1.8em;
+    }
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .section-num {
+      background: #2c7bb6;
+      color: #fff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1em;
+      flex-shrink: 0;
+    }
+    .section-title h2 {
+      font-size: 1.1em;
+      color: #1a1a1a;
+    }
+
+    /* ---- Задание 7: Математика ---- */
+    .math-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .math-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .math-row label { font-size: 0.95em; color: #444; }
+    .math-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .math-word { font-style: italic; color: #2c7bb6; font-weight: 600; }
+    .math-op { color: #e07b00; font-weight: bold; font-size: 1.1em; }
+    input[type="text"].short {
+      border: none;
+      border-bottom: 2px dashed #aaa;
+      outline: none;
+      width: 80px;
+      font-size: 1em;
+      padding: 2px 4px;
+      color: #333;
+      background: transparent;
+    }
+    input[type="text"].medium {
+      border: none;
+      border-bottom: 2px dashed #aaa;
+      outline: none;
+      width: 120px;
+      font-size: 1em;
+      padding: 2px 4px;
+      color: #333;
+      background: transparent;
+    }
+    input[type="text"].long {
+      border: none;
+      border-bottom: 2px dashed #aaa;
+      outline: none;
+      width: 180px;
+      font-size: 1em;
+      padding: 2px 4px;
+      color: #333;
+      background: transparent;
+    }
+    .example { color: #2c7bb6; font-style: italic; }
+
+    /* ---- Задание 8: Фото + числа ---- */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      text-align: center;
+    }
+    .photo-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #dde;
+    }
+    .photo-item .emoji-img {
+      font-size: 3em;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f4f8;
+      border-radius: 8px;
+      border: 2px solid #dde;
+    }
+    .photo-item p { margin-top: 8px; font-size: 0.9em; color: #666; }
+    .photo-item input[type="text"] {
+      margin-top: 6px;
+      border: none;
+      border-bottom: 2px dashed #aaa;
+      width: 90%;
+      font-size: 1em;
+      padding: 2px 4px;
+      outline: none;
+      background: transparent;
+    }
+
+    /* ---- Задание 9: Ряды ---- */
+    .series-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .series-given {
+      font-style: italic;
+      color: #2c7bb6;
+      font-weight: 600;
+    }
+    .series-sep { color: #999; }
+
+    /* ---- Задание 10: Glückszahlen ---- */
+    .gluck-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .gluck-box input[type="text"] {
+      border: none;
+      border-bottom: 2px dashed #aaa;
+      width: 200px;
+      font-size: 1em;
+      padding: 2px 4px;
+      outline: none;
+      background: transparent;
+    }
+
+    /* ---- Zahlenschlange ---- */
+    .schlange-box {
+      background: #e8f0fb;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 1.05em;
+      letter-spacing: 2px;
+      color: #1a3a5c;
+      margin-bottom: 16px;
+      line-height: 2;
+    }
+    .schlange-answer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .schlange-answer input[type="text"] {
+      border: 1px solid #aac;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.95em;
+      width: 110px;
+      outline: none;
+    }
+
+    /* ---- Spelling ---- */
+    .spelling-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .spell-card {
+      background: #f7f9ff;
+      border: 2px solid #c9d9f0;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .spell-card .word-hint {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #2c7bb6;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+    .spell-card input[type="text"] {
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #aac;
+      font-size: 1em;
+      padding: 4px;
+      text-align: center;
+      outline: none;
+      background: transparent;
+    }
+    .check-btn {
+      margin-top: 8px;
+      padding: 4px 12px;
+      background: #2c7bb6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    .check-btn:hover { background: #1a5a8a; }
+    .spell-feedback {
+      font-size: 0.85em;
+      margin-top: 4px;
+      min-height: 18px;
+    }
+    .correct { color: green; }
+    .wrong { color: red; }
+
+    /* ---- Вопросительные слова ---- */
+    .qwords-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .qwords-table th {
+      background: #2c7bb6;
+      color: #fff;
+      padding: 10px;
+      text-align: left;
+    }
+    .qwords-table td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .qwords-table tr:nth-child(even) { background: #f0f6ff; }
+    .q-word { font-weight: bold; color: #2c5f8a; font-size: 1.1em; }
+    .q-meaning { color: #e07b00; font-weight: 600; }
+
+    .match-section { margin-top: 16px; }
+    .match-section h3 { color: #2c5f8a; margin-bottom: 12px; font-size: 1em; }
+    .match-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .match-question {
+      min-width: 220px;
+      font-style: italic;
+      color: #333;
+    }
+    .match-item select {
+      padding: 6px 10px;
+      border: 2px solid #aac;
+      border-radius: 6px;
+      font-size: 0.95em;
+      outline: none;
+      cursor: pointer;
+    }
+    .match-check {
+      padding: 4px 10px;
+      background: #2c7bb6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    .match-fb { font-size: 0.85em; min-width: 40px; }
+
+    /* ---- Wie geht's Smileys ---- */
+    .smiley-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      text-align: center;
+    }
+    .smiley-card {
+      background: #f7f9ff;
+      border: 2px solid #c9d9f0;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .smiley-face {
+      font-size: 2.5em;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .smiley-label { font-weight: 600; color: #2c5f8a; margin-bottom: 8px; display: block; }
+    .smiley-card input[type="text"] {
+      width: 100%;
+      border: none;
+      border-bottom: 2px dashed #aaa;
+      font-size: 0.95em;
+      padding: 4px;
+      text-align: center;
+      outline: none;
+      background: transparent;
+    }
+
+    /* ---- aus/in ---- */
+    .aus-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .aus-card {
+      background: #f7f9ff;
+      border: 2px solid #c9d9f0;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .aus-card .speech {
+      background: #e8f0fb;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 0.95em;
+      line-height: 1.8;
+    }
+    .aus-card select {
+      padding: 2px 6px;
+      border: 2px solid #aac;
+      border-radius: 4px;
+      font-size: 0.95em;
+      outline: none;
+    }
+    .aus-label {
+      font-weight: bold;
+      color: #2c7bb6;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ---- Кнопка проверить всё ---- */
+    .check-all-btn {
+      display: block;
+      margin: 0 auto 30px;
+      padding: 14px 40px;
+      background: #27ae60;
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(39,174,96,0.3);
+    }
+    .check-all-btn:hover { background: #1e8449; }
+
+    @media (max-width: 600px) {
+      .math-grid { grid-template-columns: 1fr; }
+      .photo-grid { grid-template-columns: repeat(2, 1fr); }
+      .smiley-grid { grid-template-columns: repeat(2, 1fr); }
+      .aus-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>🇩🇪 Deutsch – Hausaufgaben</h1>
+
+<!-- ==================== ЗАДАНИЕ 7 ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">7</div>
+    <h2>Lös die Rechenaufgaben. Schreib dann die Aufgaben in Ziffern.</h2>
+  </div>
+  <div class="math-grid">
+
+    <div class="math-row">
+      <div class="math-line">
+        <span>1.</span>
+        <span class="math-word">drei</span> <span class="math-op">+</span>
+        <span class="math-word">fünf</span> <span>=</span>
+        <span class="example">acht</span>
+      </div>
+      <div class="math-line">
+        <span class="example">3</span> <span class="math-op">+</span>
+        <span class="example">5</span> <span>=</span>
+        <span class="example">8</span>
+      </div>
+    </div>
+
+    <div class="math-row">
+      <div class="math-line">
+        <span>4.</span>
+        <span class="math-word">sechzehn</span> <span class="math-op">÷</span>
+        <span class="math-word">vier</span> <span>=</span>
+        <input type="text" class="short" placeholder="Wort" />
+      </div>
+      <div class="math-line">
+        <input type="text" class="short" placeholder="Zahl" />
+        <span class="math-op">÷</span>
+        <input type="text" class="short" placeholder="Zahl" />
+        <span>=</span>
+        <input type="text" class="short" placeholder="Zahl" />
+      </div>
+    </div>
+
+    <div class="math-row">
+      <div class="math-line">
+        <span>2.</span>
+        <span class="math-word">zwanzig</span> <span class="math-op">−</span>
+        <span class="math-word">neun</span> <span>=</span>
+        <input type="text" class="short" placeholder="Wort" />
+      </div>
+      <div class="math-line">
+        <input type="text" class="short" placeholder="Zahl" />
+        <span class="math-op">−</span>
+        <input type="text" class="short" placeholder="Zahl" />
+        <span>=</span>
+        <input type="text" class="short" placeholder="Zahl" />
+      </div>
+    </div>
+
+    <div class="math-row">
+      <div class="math-line">
+        <span>5.</span>
+        <span class="math-word">neunzehn</span> <span class="math-op">−</span>
+        <span class="math-word">neun</span> <span>=</span>
+        <input type="text" class="short" placeholder="Wort" />
+      </div>
+      <div class="math-line">
+        <input type="text" class="short" placeholder="Zahl" />
+        <span class="math-op">−</span>
+        <input type="text" class="short" placeholder="Zahl" />
+        <span>=</span>
+        <input type="text" class="short" placeholder="Zahl" />
+      </div>
+    </div>
+
+    <div class="math-row">
+      <div class="math-line">
+        <span>3.</span>
+        <span class="math-word">achtzehn</span> <span class="math-op">×</span>
+        <span class="math-word">null</span> <span>=</span>
+        <input type="text" class="short" placeholder="Wort" />
+      </div>
+      <div class="math-line">
+        <input type="text" class="short" placeholder="Zahl" />
+        <span class="math-op">×</span>
+        <input type="text" class="short" placeholder="Zahl" />
+        <span>=</span>
+        <input type="text" class="short" placeholder="Zahl" />
+      </div>
+    </div>
+
+    <div class="math-row">
+      <div class="math-line">
+        <span>6.</span>
+        <span class="math-word">zwei</span> <span class="math-op">×</span>
+        <span class="math-word">sechs</span> <span>=</span>
+        <input type="text" class="short" placeholder="Wort" />
+      </div>
+      <div class="math-line">
+        <input type="text" class="short" placeholder="Zahl" />
+        <span class="math-op">×</span>
+        <input type="text" class="short" placeholder="Zahl" />
+        <span>=</span>
+        <input type="text" class="short" placeholder="Zahl" />
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== ЗАДАНИЕ 8: ФОТО + ЧИСЛА ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">8</div>
+    <h2>Welche Zahlen passen? Ergänze.</h2>
+  </div>
+  <div class="photo-grid">
+    <div class="photo-item">
+      <div class="emoji-img">🐴🐴</div>
+      <p>Wie viele Pferde?</p>
+      <input type="text" placeholder="..." />
+    </div>
+    <div class="photo-item">
+      <div class="emoji-img">🍀</div>
+      <p>Wie viele Blätter?</p>
+      <input type="text" placeholder="..." />
+    </div>
+    <div class="photo-item">
+      <div class="emoji-img">👩‍👩‍👧‍👧👩‍👩‍👧‍👧👩</div>
+      <p>Wie viele Mädchen?</p>
+      <input type="text" placeholder="..." />
+    </div>
+    <div class="photo-item">
+      <div class="emoji-img">🎳</div>
+      <p>Wie viele Kegel?</p>
+      <input type="text" placeholder="..." />
+    </div>
+  </div>
+  <p style="margin-top:12px;font-size:0.85em;color:#999;">Примеры: zwei Pferde • vier Blätter • elf Mädchen • zehn Kegel</p>
+</div>
+
+<!-- ==================== ЗАДАНИЕ 9: РЯДЫ ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">9</div>
+    <h2>Schreib die Reihen weiter.</h2>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <div class="series-row">
+      <span>1.</span>
+      <span class="series-given">eins</span><span class="series-sep">,</span>
+      <span class="series-given">drei</span><span class="series-sep">,</span>
+      <span class="series-given">fünf</span><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" />
+    </div>
+    <div class="series-row" style="margin-left:20px;font-size:0.85em;color:#aaa;">
+      <input type="text" class="short" placeholder="1" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="3" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="5" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" />
+      <span style="color:#bbb;font-size:0.9em;">(Ziffern)</span>
+    </div>
+  </div>
+
+  <div>
+    <div class="series-row">
+      <span>2.</span>
+      <span class="series-given">null</span><span class="series-sep">,</span>
+      <span class="series-given">zwei</span><span class="series-sep">,</span>
+      <span class="series-given">vier</span><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" />
+    </div>
+    <div class="series-row" style="margin-left:20px;font-size:0.85em;color:#aaa;">
+      <input type="text" class="short" placeholder="0" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="2" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="4" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" /><span class="series-sep">,</span>
+      <input type="text" class="short" placeholder="…" />
+      <span style="color:#bbb;font-size:0.9em;">(Ziffern)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ЗАДАНИЕ 10: GLÜCKSZAHLEN ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">10</div>
+    <h2>Welche sind deine Glückszahlen 🍀? Schreib auf.</h2>
+  </div>
+  <div class="gluck-box">
+    <span>Meine Glückszahlen sind:</span>
+    <input type="text" placeholder="z.B. sieben, dreizehn..." style="width:300px;border:none;border-bottom:2px dashed #aaa;font-size:1em;padding:4px;outline:none;background:transparent;" />
+  </div>
+</div>
+
+<!-- ==================== ZAHLENSCHLANGE ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">Z</div>
+    <h2>Zahlenschlange – Trenn die Zahlen und schreib sie!</h2>
+  </div>
+  <div class="schlange-box">
+    FÜNF|SECHZEHNSECHSZWANZIGSIEBENELFNULL<br/>
+    SIEBZEHNVIEREINSZEHNNNEUNZWÖLFZWEI
+  </div>
+  <p style="margin-bottom:12px;color:#555;font-size:0.9em;">Schreib jede Zahl einzeln in ein Feld:</p>
+  <div class="schlange-answer">
+    <input type="text" placeholder="FÜNF" />
+    <input type="text" placeholder="Zahl 2" />
+    <input type="text" placeholder="Zahl 3" />
+    <input type="text" placeholder="Zahl 4" />
+    <input type="text" placeholder="Zahl 5" />
+    <input type="text" placeholder="Zahl 6" />
+    <input type="text" placeholder="Zahl 7" />
+    <input type="text" placeholder="Zahl 8" />
+    <input type="text" placeholder="Zahl 9" />
+    <input type="text" placeholder="Zahl 10" />
+    <input type="text" placeholder="Zahl 11" />
+    <input type="text" placeholder="Zahl 12" />
+  </div>
+</div>
+
+<!-- ==================== SPELLING ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">S</div>
+    <h2>Spelling – Schreib das Wort richtig!</h2>
+  </div>
+  <div class="spelling-grid">
+
+    <div class="spell-card">
+      <div class="word-hint">M _ I N _</div>
+      <input type="text" id="sp1" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp1','meine','fb1')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb1"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">D _ I N _</div>
+      <input type="text" id="sp2" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp2','deine','fb2')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb2"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">M _ T T _ R</div>
+      <input type="text" id="sp3" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp3','Mutter','fb3')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb3"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">F _ M _ L _ _</div>
+      <input type="text" id="sp4" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp4','Familie','fb4')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb4"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">V _ T _ R</div>
+      <input type="text" id="sp5" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp5','Vater','fb5')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb5"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">S _ H W _ S T _ R</div>
+      <input type="text" id="sp6" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp6','Schwester','fb6')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb6"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">Z W _ L F</div>
+      <input type="text" id="sp7" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp7','zwölf','fb7')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb7"></div>
+    </div>
+
+    <div class="spell-card">
+      <div class="word-hint">H _ I _ _ T</div>
+      <input type="text" id="sp8" placeholder="Schreib hier..." />
+      <br/>
+      <button class="check-btn" onclick="checkSpell('sp8','heißt','fb8')">✔ Prüfen</button>
+      <div class="spell-feedback" id="fb8"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== ВОПРОСИТЕЛЬНЫЕ СЛОВА ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">F</div>
+    <h2>Fragewörter – Вопросительные слова</h2>
+  </div>
+
+  <table class="qwords-table">
+    <thead>
+      <tr>
+        <th>Fragewort</th>
+        <th>Bedeutung (Значение)</th>
+        <th>Beispiel</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="q-word">wie</span></td>
+        <td><span class="q-meaning">как?</span></td>
+        <td><em>Wie heißt du? Wie geht's dir?</em></td>
+      </tr>
+      <tr>
+        <td><span class="q-word">wer</span></td>
+        <td><span class="q-meaning">кто?</span></td>
+        <td><em>Wer bist du? Wer ist da?</em></td>
+      </tr>
+      <tr>
+        <td><span class="q-word">was</span></td>
+        <td><span class="q-meaning">что?</span></td>
+        <td><em>Was ist das? Was ist "was"?</em></td>
+            </tr>
+      <tr>
+        <td><span class="q-word">wo</span></td>
+        <td><span class="q-meaning">где?</span></td>
+        <td><em>Wo wohnst du? Wo ist die Schule?</em></td>
+      </tr>
+      <tr>
+        <td><span class="q-word">woher</span></td>
+        <td><span class="q-meaning">откуда?</span></td>
+        <td><em>Woher kommst du?</em></td>
+      </tr>
+      <tr>
+        <td><span class="q-word">wie alt</span></td>
+        <td><span class="q-meaning">сколько лет?</span></td>
+        <td><em>Wie alt bist du?</em></td>
+      </tr>
+      <tr>
+        <td><span class="q-word">wie viele</span></td>
+        <td><span class="q-meaning">сколько?</span></td>
+        <td><em>Wie viele Kinder sind das?</em></td>
+      </tr>
+      <tr>
+        <td><span class="q-word">wann</span></td>
+        <td><span class="q-meaning">когда?</span></td>
+        <td><em>Wann hast du Geburtstag?</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Matching Exercise -->
+  <div class="match-section">
+    <h3>🎯 Welches Fragewort passt? Wähle aus!</h3>
+
+    <div class="match-item">
+      <span class="match-question">1. _____ heißt du?</span>
+      <select id="m1">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m1','wie','mfb1')">✔</button>
+      <span class="match-fb" id="mfb1"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">2. _____ kommst du?</span>
+      <select id="m2">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m2','woher','mfb2')">✔</button>
+      <span class="match-fb" id="mfb2"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">3. _____ wohnst du?</span>
+      <select id="m3">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m3','wo','mfb3')">✔</button>
+      <span class="match-fb" id="mfb3"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">4. _____ alt bist du?</span>
+      <select id="m4">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m4','wie','mfb4')">✔</button>
+      <span class="match-fb" id="mfb4"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">5. _____ ist das?</span>
+      <select id="m5">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m5','was','mfb5')">✔</button>
+      <span class="match-fb" id="mfb5"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">6. _____ hast du Geburtstag?</span>
+      <select id="m6">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m6','wann','mfb6')">✔</button>
+      <span class="match-fb" id="mfb6"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">7. _____ bist du?</span>
+      <select id="m7">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m7','wer','mfb7')">✔</button>
+      <span class="match-fb" id="mfb7"></span>
+    </div>
+
+    <div class="match-item">
+      <span class="match-question">8. _____ viele Schüler sind da?</span>
+      <select id="m8">
+        <option value="">-- wählen --</option>
+        <option value="wie">wie</option>
+        <option value="wer">wer</option>
+        <option value="was">was</option>
+        <option value="wo">wo</option>
+        <option value="woher">woher</option>
+        <option value="wann">wann</option>
+      </select>
+      <button class="match-check" onclick="checkMatch('m8','wie','mfb8')">✔</button>
+      <span class="match-fb" id="mfb8"></span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== WIE GEHT'S ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">G</div>
+    <h2>Wie geht's? – Как дела? Schreib die passende Antwort!</h2>
+  </div>
+  <div class="smiley-grid">
+    <div class="smiley-card">
+      <span class="smiley-face">😄</span>
+      <span class="smiley-label">Sehr gut!</span>
+      <input type="text" placeholder="Schreib auf Deutsch..." />
+    </div>
+    <div class="smiley-card">
+      <span class="smiley-face">🙂</span>
+      <span class="smiley-label">Gut.</span>
+      <input type="text" placeholder="Schreib auf Deutsch..." />
+    </div>
+    <div class="smiley-card">
+      <span class="smiley-face">😐</span>
+      <span class="smiley-label">Es geht.</span>
+      <input type="text" placeholder="Schreib auf Deutsch..." />
+    </div>
+    <div class="smiley-card">
+      <span class="smiley-face">😞</span>
+      <span class="smiley-label">Nicht so gut.</span>
+      <input type="text" placeholder="Schreib auf Deutsch..." />
+    </div>
+  </div>
+  <p style="margin-top:16px;font-size:0.85em;color:#888;">
+    💡 Mögliche Antworten: <em>Sehr gut, danke! • Gut, danke! • Es geht. • Nicht so gut.</em>
+  </p>
+</div>
+
+<!-- ==================== AUS / IN ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">P</div>
+    <h2>Präpositionen: <em>aus</em> oder <em>in</em>? Wähle richtig!</h2>
+  </div>
+  <p style="margin-bottom:16px;font-size:0.9em;color:#555;">
+    🔵 <strong>aus</strong> = откуда (происхождение) &nbsp;|&nbsp;
+    🟠 <strong>in</strong> = где (местонахождение)
+  </p>
+  <div class="aus-grid">
+
+    <div class="aus-card">
+      <div class="speech">
+        Ich komme
+        <select onchange="checkAus(this,'aus','fb_a1')">
+          <option value="">--</option>
+          <option value="aus">aus</option>
+          <option value="in">in</option>
+        </select>
+        Deutschland.
+      </div>
+      <span id="fb_a1" class="spell-feedback"></span>
+      <span class="aus-label">Ich bin Deutsche/r. 🇩🇪</span>
+    </div>
+
+    <div class="aus-card">
+      <div class="speech">
+        Ich wohne
+        <select onchange="checkAus(this,'in','fb_a2')">
+          <option value="">--</option>
+          <option value="aus">aus</option>
+          <option value="in">in</option>
+        </select>
+        Berlin.
+      </div>
+      <span id="fb_a2" class="spell-feedback"></span>
+      <span class="aus-label">Meine Stadt ist Berlin. 🏙️</span>
+    </div>
+
+    <div class="aus-card">
+      <div class="speech">
+        Er kommt
+        <select onchange="checkAus(this,'aus','fb_a3')">
+          <option value="">--</option>
+          <option value="aus">aus</option>
+          <option value="in">in</option>
+        </select>
+        Österreich.
+      </div>
+      <span id="fb_a3" class="spell-feedback"></span>
+      <span class="aus-label">Er ist Österreicher. 🇦🇹</span>
+    </div>
+
+    <div class="aus-card">
+      <div class="speech">
+        Sie wohnt
+        <select onchange="checkAus(this,'in','fb_a4')">
+          <option value="">--</option>
+          <option value="aus">aus</option>
+          <option value="in">in</option>
+        </select>
+        Wien.
+      </div>
+      <span id="fb_a4" class="spell-feedback"></span>
+      <span class="aus-label">Wien ist die Hauptstadt. 🎶</span>
+    </div>
+
+    <div class="aus-card">
+      <div class="speech">
+        Woher kommst du?
+        – Ich komme
+        <select onchange="checkAus(this,'aus','fb_a5')">
+          <option value="">--</option>
+          <option value="aus">aus</option>
+          <option value="in">in</option>
+        </select>
+        der Schweiz.
+      </div>
+      <span id="fb_a5" class="spell-feedback"></span>
+      <span class="aus-label">Herkunft = aus 🇨🇭</span>
+    </div>
+
+    <div class="aus-card">
+      <div class="speech">
+        Wo wohnst du?
+        – Ich wohne
+        <select onchange="checkAus(this,'in','fb_a6')">
+          <option value="">--</option>
+          <option value="aus">aus</option>
+          <option value="in">in</option>
+        </select>
+        Zürich.
+      </div>
+      <span id="fb_a6" class="spell-feedback"></span>
+      <span class="aus-label">Wohnort = in 🏡</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== САМООЦЕНКА ==================== -->
+<div class="section">
+  <div class="section-title">
+    <div class="section-num">⭐</div>
+    <h2>Selbstbewertung – Оцени себя!</h2>
+  </div>
+  <p style="margin-bottom:16px;color:#555;font-size:0.95em;">
+    Wie gut kannst du das? Klicke auf die Sterne! ⭐
+  </p>
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr style="background:#2c7bb6;color:#fff;">
+        <th style="padding:10px;text-align:left;">Ich kann...</th>
+        <th style="padding:10px;text-align:center;">⭐⭐⭐ Sehr gut</th>
+        <th style="padding:10px;text-align:center;">⭐⭐ Gut</th>
+        <th style="padding:10px;text-align:center;">⭐ Noch nicht so gut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px;">Zahlen von 0–20 sagen und schreiben</td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r1" value="3" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r1" value="2" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r1" value="1" /></td>
+      </tr>
+      <tr style="background:#f7f9ff;border-bottom:1px solid #eee;">
+        <td style="padding:10px;">Rechenaufgaben auf Deutsch lösen</td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r2" value="3" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r2" value="2" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r2" value="1" /></td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px;">Zahlenreihen weiterschreiben</td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r3" value="3" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r3" value="2" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r3" value="1" /></td>
+      </tr>
+      <tr style="background:#f7f9ff;border-bottom:1px solid #eee;">
+        <td style="padding:10px;">Fragewörter (wie, wer, was, wo...) benutzen</td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r4" value="3" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r4" value="2" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r4" value="1" /></td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px;"><em>aus</em> und <em>in</em> richtig verwenden</td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r5" value="3" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r5" value="2" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r5" value="1" /></td>
+      </tr>
+      <tr style="background:#f7f9ff;">
+        <td style="padding:10px;">Auf <em>Wie geht's?</em> antworten</td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r6" value="3" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r6" value="2" /></td>
+        <td style="text-align:center;padding:8px;"><input type="radio" name="r6" value="1" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== КНОПКА ПРОВЕРИТЬ ВСЁ ==================== -->
+<button class="check-all-btn" onclick="checkAll()">
+  🎯 Alles prüfen!
+</button>
+
+<div id="result-box" style="display:none;text-align:center;padding:20px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:30px;">
+  <div style="font-size:3em;" id="result-emoji">🎉</div>
+  <div style="font-size:1.3em;font-weight:bold;color:#2c5f8a;margin:10px 0;" id="result-text"></div>
+  <div style="color:#666;" id="result-sub"></div>
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+
+  // --- Проверка spelling ---
+  function checkSpell(inputId, correct, fbId) {
+    const val = document.getElementById(inputId).value.trim().toLowerCase();
+    const fb  = document.getElementById(fbId);
+    const ans = correct.toLowerCase();
+    if (val === ans) {
+      fb.textContent = '✅ Richtig!';
+      fb.className = 'spell-feedback correct';
+    } else if (val === '') {
+      fb.textContent = '✏️ Bitte schreib etwas!';
+      fb.className = 'spell-feedback';
+      fb.style.color = '#aaa';
+    } else {
+      fb.textContent = '❌ Falsch! Richtig: ' + correct;
+      fb.className = 'spell-feedback wrong';
+    }
+  }
+
+  // --- Проверка match (Fragewörter) ---
+  function checkMatch(selectId, correct, fbId) {
+    const val = document.getElementById(selectId).value;
+    const fb  = document.getElementById(fbId);
+    if (val === correct) {
+      fb.textContent = '✅';
+      fb.className = 'match-fb correct';
+    } else if (val === '') {
+      fb.textContent = '❓';
+      fb.className = 'match-fb';
+      fb.style.color = '#aaa';
+    } else {
+      fb.textContent = '❌ → ' + correct;
+      fb.className = 'match-fb wrong';
+    }
+  }
+
+  // --- Проверка aus/in ---
+  function checkAus(selectEl, correct, fbId) {
+    const fb = document.getElementById(fbId);
+    if (selectEl.value === correct) {
+      fb.textContent = '✅ Richtig!';
+      fb.className = 'spell-feedback correct';
+      selectEl.style.borderColor = 'green';
+    } else if (selectEl.value === '') {
+      fb.textContent = '';
+    } else {
+      fb.textContent = '❌ Falsch! Richtig: ' + correct;
+      fb.className = 'spell-feedback wrong';
+      selectEl.style.borderColor = 'red';
+    }
+  }
+
+  // --- Проверить всё ---
+  function checkAll() {
+    // Spelling answers
+    const spAnswers = {
+      sp1: 'meine', sp2: 'deine', sp3: 'Mutter',
+      sp4: 'Familie', sp5: 'Vater', sp6: 'Schwester',
+      sp7: 'zwölf', sp8: 'heißt'
+    };
+    const fbIds = {
+      sp1:'fb1', sp2:'fb2', sp3:'fb3', sp4:'fb4',
+      sp5:'fb5', sp6:'fb6', sp7:'fb7', sp8:'fb8'
+    };
+
+    let correct = 0, total = 0;
+
+    for (const [id, ans] of Object.entries(spAnswers)) {
+      total++;
+      const el = document.getElementById(id);
+      if (el && el.value.trim().toLowerCase() === ans.toLowerCase()) {
+        correct++;
+        document.getElementById(fbIds[id]).textContent = '✅ Richtig!';
+        document.getElementById(fbIds[id]).className = 'spell-feedback correct';
+      } else if (el && el.value.trim() !== '') {
+        document.getElementById(fbIds[id]).textContent = '❌ Richtig: ' + ans;
+        document.getElementById(fbIds[id]).className = 'spell-feedback wrong';
+      }
+    }
+
+    // Match answers
+    const matchAnswers = {
+      m1:'wie', m2:'woher', m3:'wo', m4:'wie',
+      m5:'was', m6:'wann', m7:'wer', m8:'wie'
+    };
+    const matchFb = {
+      m1:'mfb1', m2:'mfb2', m3:'mfb3', m4:'mfb4',
+      m5:'mfb5', m6:'mfb6', m7:'mfb7', m8:'mfb8'
+    };
+
+    for (const [id, ans] of Object.entries(matchAnswers)) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      total++;
+      if (el.value === ans) {
+        correct++;
+        document.getElementById(matchFb[id]).textContent = '✅';
+        document.getElementById(matchFb[id]).className = 'match-fb correct';
+      } else if (el.value !== '') {
+        document.getElementById(matchFb[id]).textContent = '❌ → ' + ans;
+        document.getElementById(matchFb[id]).className = 'match-fb wrong';
+      }
+    }
+
+    // Show result
+    const box = document.getElementById('result-box');
+    const pct = Math.round((correct / total) * 100);
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth' });
+
+    let emoji, text, sub;
+    if (pct >= 90) {
+      emoji = '🏆'; text = 'Ausgezeichnet! Fantastisch!';
+      sub = `Du hast ${correct} von ${total} Aufgaben richtig! (${pct}%)`;
+    } else if (pct >= 70) {
+      emoji = '😊'; text = 'Sehr gut gemacht!';
+      sub = `Du hast ${correct} von ${total} Aufgaben richtig! (${pct}%) Fast perfekt!`;
+    } else if (pct >= 50) {
+      emoji = '🙂'; text = 'Gut! Weiter üben!';
+      sub = `Du hast ${correct} von ${total} Aufgaben richtig! (${pct}%) Du kannst es noch besser!`;
+    } else {
+      emoji = '📚'; text = 'Noch mehr üben!';
+      sub = `Du hast ${correct} von ${total} Aufgaben richtig! (${pct}%) Nicht aufgeben! 💪`;
+    }
+
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-text').textContent = text;
+    document.getElementById('result-sub').textContent = sub;
+  }
+
+</script>
+
+</body>
+</html>
