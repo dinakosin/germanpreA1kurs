@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Urlaub & Hobbys — Hausaufgaben</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #fdf8f2; --accent: #f6a623; --accent2: #e8743b;
+  --blue: #3b74e8; --red: #e84040; --green: #5aac44;
+  --card: #ffffff; --txt: #2e2e2e; --light: #fef3e2;
+  --border: #f0dfc0;
+}
+html, body { margin:0; padding:0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  min-height: 100vh;
+  padding: 16px;
+}
+.page { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+/* HEADER */
+.page-header {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 18px;
+  padding: 20px 24px;
+  color: #fff;
+}
+.page-header h1 { margin:0 0 4px; font-size: 1.6rem; }
+.page-header p { margin:0; font-size: .85rem; opacity: .85; }
+
+/* TASK BLOCK */
+.task {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 4px 16px rgba(232,116,59,.08);
+}
+.task-header {
+  display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px;
+}
+.task-num {
+  min-width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 50%;
+  color: #fff; font-weight: 800; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.task-title { font-size: 1rem; font-weight: 700; line-height: 1.4; margin:0; }
+.task-subtitle { font-size: .72rem; color: #aaa; margin: 2px 0 0; font-style: italic; }
+
+/* ---- TASK 1: highlight text ---- */
+.text-block {
+  background: var(--light);
+  border-radius: 12px;
+  padding: 16px;
+  line-height: 1.9;
+  font-size: .97rem;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.text-block .word {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1px 3px;
+  transition: background .15s;
+  display: inline-block;
+}
+.word.past   { background: #ffc2c2; color: #a00; font-weight: 700; }
+.word.present{ background: #c2d8ff; color: #003a9e; font-weight: 700; }
+.legend {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 6px; font-size: .8rem; cursor: pointer;
+  padding: 5px 12px; border-radius: 20px; border: 2px solid transparent;
+  font-weight: 600; user-select: none;
+}
+.legend-item.past-btn   { background: #ffc2c2; color: #a00; border-color: #e88; }
+.legend-item.present-btn{ background: #c2d8ff; color: #003a9e; border-color: #88b; }
+.legend-item.active { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.legend-item.clear-btn  { background: #eee; color: #555; border-color: #ccc; }
+#t1-feedback { font-size: .8rem; margin-top: 8px; color: #777; min-height: 20px; }
+
+/* ---- TASK 2: match ---- */
+.match-area { display: flex; flex-direction: column; gap: 10px; }
+.match-q {
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: .92rem;
+  color: var(--accent2);
+}
+.match-answers { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.match-answer {
+  display: flex; align-items: center; gap: 8px;
+  background: #f9f9f9;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: .88rem;
+  transition: border .15s, background .15s;
+  user-select: none;
+}
+.match-answer:hover { border-color: var(--accent); background: #fff8ee; }
+.match-answer.selected { border-color: var(--accent2); background: #fdeede; }
+.match-answer.correct  { border-color: var(--green); background: #e6f9e2; color: #2a6e1a; font-weight:700; }
+.match-answer.wrong    { border-color: var(--red); background: #ffe6e6; }
+.match-answer .radio {
+  width:16px; height:16px; border-radius:50%;
+  border:2px solid #ccc; flex-shrink:0;
+  transition: border .15s, background .15s;
+}
+.match-answer.selected .radio { border-color: var(--accent2); background: var(--accent2); }
+.match-answer.correct  .radio { border-color: var(--green); background: var(--green); }
+.match-check {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 10px;
+  font-weight: 700; font-size: .88rem; cursor: pointer;
+}
+.match-check:active { transform: scale(.97); }
+
+/* ---- TASK 3: audio + fill ---- */
+.audio-player {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--light); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
+}
+.play-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; color: #fff; font-size: 1.1rem;
+  cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.play-btn:active { transform: scale(.95); }
+.audio-label { font-size: .82rem; color: #888; }
+.fill-sentence {
+  font-size: .97rem; line-height: 2;
+  background: var(--light);
+  border-radius: 10px; padding: 12px 16px;
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.fill-sentence input {
+  border: none; border-bottom: 2px solid var(--accent2);
+  background: transparent; font-size: .97rem; color: var(--txt);
+  width: 110px; outline: none; padding: 1px 4px;
+  font-family: inherit;
+}
+.fill-sentence input.correct { border-bottom-color: var(--green); background: #e6f9e2; border-radius:4px; color:#1a6e00; }
+.fill-sentence input.wrong   { border-bottom-color: var(--red); background: #ffe6e6; border-radius:4px; }
+.check-btn {
+  padding: 8px 18px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 10px;
+  font-weight: 700; font-size: .88rem; cursor: pointer; margin-top: 8px;
+}
+.check-btn:active { transform: scale(.97); }
+.profile-box {
+  background: linear-gradient(135deg,#fff8ee,#fdeede);
+  border: 1.5px dashed var(--accent);
+  border-radius: 12px; padding: 12px 16px;
+  margin-bottom: 12px; font-size: .88rem;
+}
+.profile-box strong { color: var(--accent2); }
+.profile-box table { width:100%; border-collapse:collapse; margin-top:6px; }
+.profile-box td { padding: 3px 8px; font-size:.87rem; }
+.profile-box td:first-child { font-weight:700; color: var(--accent2); width:42%; }
+
+/* ---- TASK 4: free write ---- */
+.free-area { display: flex; flex-direction: column; gap: 10px; }
+.free-q { font-weight:700; font-size:.95rem; color: var(--accent2); padding: 8px 12px; background:var(--light); border-radius:8px; border-left: 3px solid var(--accent); }
+.free-area textarea {
+  width:100%; min-height:56px; border: 1.5px solid var(--border);
+  border-radius:10px; padding:10px; font-family:inherit; font-size:.92rem;
+  resize:vertical; outline:none; background:#fafafa; color:var(--txt);
+  transition: border .2s;
+}
+.free-area textarea:focus { border-color: var(--accent2); background:#fff; }
+
+/* ---- TASK 5: AI prompt ---- */
+.ai-box {
+  background: linear-gradient(135deg,#eef6ff,#dbeeff);
+  border: 1.5px solid #b0d0f8;
+  border-radius: 12px; padding: 14px 16px;
+  font-size: .88rem; line-height: 1.7;
+  white-space: pre-wrap; color: #1a3a6a;
+}
+.copy-btn {
+  padding: 8px 16px; border: none; border-radius: 10px;
+  background: linear-gradient(90deg, #3b74e8, #23a6f6);
+  color: #fff; font-weight:700; font-size:.85rem; cursor:pointer; margin-top:10px;
+}
+.copy-btn:active { transform:scale(.97); }
+
+/* ---- TASK 6: dialogue fill ---- */
+.dialogue { display:flex; flex-direction:column; gap:6px; }
+.dialogue-line { display:flex; gap:10px; align-items:baseline; }
+.spk { font-style:italic; color:#888; font-size:.85rem; min-width:56px; }
+.dialogue-line input {
+  border: none; border-bottom: 2px solid var(--accent2);
+  background: transparent; font-size: .93rem; color: var(--txt);
+  width: 180px; outline: none; padding: 1px 4px; font-family:inherit;
+}
+.dialogue-line input.correct { border-bottom-color: var(--green); background:#e6f9e2; border-radius:4px; color:#1a6e00; }
+.dialogue-line input.wrong   { border-bottom-color: var(--red); background:#ffe6e6; border-radius:4px; }
+.word-bank {
+  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;
+}
+.chip {
+  background: var(--light); border: 1.5px solid var(--accent);
+  border-radius: 20px; padding: 4px 14px; font-size:.85rem; font-weight:700;
+  cursor:pointer; color: var(--accent2); user-select:none;
+  transition: background .15s;
+}
+.chip:hover { background:#fdeede; }
+.chip.used { opacity:.35; pointer-events:none; }
+
+/* ---- TASK 7: reading / richtig-falsch ---- */
+.reading-text {
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  font-size: .93rem; line-height: 1.8;
+  margin-bottom: 14px;
+}
+.rf-list { display:flex; flex-direction:column; gap:8px; }
+.rf-item { display:flex; align-items:center; gap:10px; }
+.rf-item span { flex:1; font-size:.92rem; }
+.rf-btns { display:flex; gap:6px; }
+.rf-btn {
+  padding: 5px 14px; border-radius:8px; border:2px solid #ddd;
+  background:#f5f5f5; font-weight:700; font-size:.82rem; cursor:pointer;
+  transition: all .15s;
+}
+.rf-btn:hover { border-color: var(--accent); }
+.rf-btn.r-sel { background: #c2d8ff; border-color: var(--blue); color: var(--blue); }
+.rf-btn.f-sel { background: #ffc2c2; border-color: var(--red); color: var(--red); }
+.rf-btn.correct { background: #e6f9e2; border-color: var(--green); color: var(--green); }
+.rf-btn.wrong   { background: #ffe6e6; border-color: var(--red); color: var(--red); }
+
+/* FEEDBACK row */
+.feedback-row { margin-top:10px; font-size:.82rem; color:#777; min-height:18px; }
+.feedback-row.ok  { color: var(--green); font-weight:700; }
+.feedback-row.err { color: var(--red); font-weight:700; }
+
+/* SECTION DIVIDER */
+.section-label {
+  font-size:.72rem; text-transform:uppercase; letter-spacing:1.5px;
+  color: var(--accent2); font-weight:800; margin-bottom:-8px; margin-top:4px;
+  padding-left:4px;
+}
+
+@media(max-width:500px){
+  .page { gap:14px; }
+  .task { padding:14px; }
+  .page-header h1 { font-size:1.3rem; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="page-header">
+  <h1>🏖️ Urlaub & Hobbys — Hausaufgaben</h1>
+  <p>Interaktives Arbeitsblatt · Deutsch als Fremdsprache</p>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 1 — Markiere die Verben
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">1</div>
+    <div>
+      <p class="task-title">Lies den Text. Markiere die Verben: <span style="color:#a00;background:#ffc2c2;border-radius:4px;padding:1px 6px;">Vergangenheit (Perfekt/war)</span> und <span style="color:#003a9e;background:#c2d8ff;border-radius:4px;padding:1px 6px;">Gegenwart (Präsens)</span>.</p>
+      <p class="task-subtitle">Read the text. Highlight verbs: red = past tense, blue = present tense. Click a word to toggle.</p>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item past-btn active" id="btn-past" onclick="setMode('past')">🔴 Vergangenheit</div>
+    <div class="legend-item present-btn" id="btn-present" onclick="setMode('present')">🔵 Gegenwart</div>
+    <div class="legend-item clear-btn" onclick="clearAll()">✕ Löschen</div>
+  </div>
+
+  <div class="text-block" id="t1-text"></div>
+  <button class="check-btn" onclick="checkTask1()">Überprüfen ✓</button>
+  <div id="t1-feedback"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 2 — Ordne zu
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">2</div>
+    <div>
+      <p class="task-title">Ordne die Fragen den Antworten zu. Klick auf die richtige Antwort.</p>
+      <p class="task-subtitle">Match each question to the correct answer. Click to select.</p>
+    </div>
+  </div>
+
+  <div class="match-area" id="match-area"></div>
+  <button class="match-check" onclick="checkMatch()">Überprüfen ✓</button>
+  <div class="feedback-row" id="match-fb"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 3 — Hör zu & antworte (Laura)
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">3</div>
+    <div>
+      <p class="task-title">Hör die Fragen. Antworte schriftlich als Laura.</p>
+      <p class="task-subtitle">Listen to the questions. Write answers as Laura using the clues below.</p>
+    </div>
+  </div>
+
+  <div class="profile-box">
+    <strong>📋 Lauras Profil:</strong>
+    <table>
+      <tr><td>Urlaub:</td><td>3.–17. Juni</td></tr>
+      <tr><td>Wo:</td><td>auf den Malediven (im Ausland, am Meer)</td></tr>
+      <tr><td>Mit wem:</td><td>mit ihrer Familie (Mama, Papa, Bruder Daniel)</td></tr>
+      <tr><td>Urlaub:</td><td>super</td></tr>
+      <tr><td>Wetter:</td><td>sonnig, windig, 30 Grad</td></tr>
+      <tr><td>Aktivitäten:</td><td>gebadet, geschwommen, Eis gegessen, Fotos gemacht</td></tr>
+    </table>
+  </div>
+
+  <div id="task3-area"></div>
+  <button class="check-btn" onclick="checkTask3()">Überprüfen ✓</button>
+  <div class="feedback-row" id="t3-fb"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 4 — Antworte über dich
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">4</div>
+    <div>
+      <p class="task-title">Beantworte jetzt die Fragen über dich selbst!</p>
+      <p class="task-subtitle">Now answer the same questions about yourself. Write in German.</p>
+    </div>
+  </div>
+  <div class="free-area" id="task4-area"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 5 — KI-Prompt
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">5</div>
+    <div>
+      <p class="task-title">KI-Prompt: Generiere eine Hörübung über Urlaub.</p>
+      <p class="task-subtitle">Use this prompt in your favourite AI chatbot to generate a listening activity.</p>
+    </div>
+  </div>
+  <div class="ai-box" id="ai-prompt"></div>
+  <button class="copy-btn" onclick="copyPrompt()">📋 Kopieren</button>
+  <div class="feedback-row" id="copy-fb"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 6 — Hör zu & fülle aus (Dialogue)
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">6</div>
+    <div>
+      <p class="task-title">Hör zu und fülle die Lücken aus. Dann beantworte die Fragen.</p>
+      <p class="task-subtitle">Listen and fill in the gaps. Then answer the factual questions about Nico.</p>
+    </div>
+  </div>
+
+  <div style="margin-bottom:8px; font-size:.85rem; font-weight:700; color:#888;">📦 Wortschatz-Box:</div>
+  <div class="word-bank" id="word-bank"></div>
+
+  <div class="dialogue" id="dialogue-area"></div>
+  <button class="check-btn" onclick="checkDialogue()">Überprüfen ✓</button>
+  <div class="feedback-row" id="d-fb"></div>
+
+  <div style="margin-top:16px; font-weight:700; font-size:.92rem;">❓ Beantworte die Fragen:</div>
+  <div class="free-area" id="dialogue-q-area"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AUFGABE 7 — Lies und richtig/falsch
+═══════════════════════════════════════ -->
+<div class="task">
+  <div class="task-header">
+    <div class="task-num">7</div>
+    <div>
+      <p class="task-title">Lies den Text. Richtig (r) oder falsch (f)?</p>
+      <p class="task-subtitle">Read the text about Max and Laura. Mark each sentence as true (r) or false (f).</p>
+    </div>
+  </div>
+
+  <div class="reading-text">
+    <strong>Max und Laura — Sport-Stars!</strong><br><br>
+    Laura Kobell ist 12 Jahre alt. Sie wohnt in München und klettert sehr gern.
+    Sie spielt auch Fußball und singt gern. Im Sommer war Laura im Urlaub auf den Malediven.
+    Das Wetter war super — sonnig und 30 Grad! Sie hat gebadet und Fotos gemacht.<br><br>
+    Ihr Freund Max Berger macht auch viel Sport. Er spielt Tennis, Basketball und Fußball.
+    Max klettert natürlich auch. Er war im Urlaub in Hamburg — am Meer! Das Wetter war leider regnerisch.
+    Er ist 13 Jahre alt und geht in Klasse 8b.
+  </div>
+
+  <div class="rf-list" id="rf-list"></div>
+  <button class="check-btn" onclick="checkRF()" style="margin-top:14px;">Überprüfen ✓</button>
+  <div class="feedback-row" id="rf-fb"></div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+/* ═══════════════════════════════════════
+   TASK 1 — Highlight verbs
+═══════════════════════════════════════ */
+const t1text = [
+  {w:"Mein",f:0},{w:"Name",f:0},{w:"ist",f:0,type:"present"},{w:"Max.",f:0},
+  {w:"Ich",f:0},{w:"bin",f:0,type:"present"},{w:"13",f:0},{w:"Jahre",f:0},{w:"alt.",f:0},
+  {w:"Im",f:0},{w:"Juni",f:0},{w:"war",f:0,type:"past"},{w:"ich",f:0},{w:"im",f:0},{w:"Urlaub",f:0},{w:"—",f:0},{w:"auf",f:0},{w:"den",f:0},{w:"Malediven!",f:0},
+  {w:"Das",f:0},{w:"Wetter",f:0},{w:"war",f:0,type:"past"},{w:"super:",f:0},{w:"sonnig",f:0},{w:"und",f:0},{w:"30",f:0},{w:"Grad.",f:0},
+  {w:"Ich",f:0},{w:"habe",f:0,type:"past"},{w:"gebadet,",f:0},{w:"bin",f:0,type:"past"},{w:"geschwommen",f:0},{w:"und",f:0},{w:"habe",f:0,type:"past"},{w:"viele",f:0},{w:"Fotos",f:0},{w:"gemacht.",f:0},
+  {w:"Max",f:0},{w:"mag",f:0,type:"present"},{w:"Sport.",f:0},{w:"Er",f:0},{w:"spielt",f:0,type:"present"},{w:"Tennis",f:0},{w:"und",f:0},{w:"klettert",f:0,type:"present"},{w:"gern.",f:0},
+  {w:"Jetzt",f:0},{w:"wohnt",f:0,type:"present"},{w:"er",f:0},{w:"in",f:0},{w:"München.",f:0}
+];
+
+let currentMode = 'past';
+let wordStates = t1text.map(()=>null);
+
+function setMode(m){
+  currentMode = m;
+  document.getElementById('btn-past').classList.toggle('active', m==='past');
+  document.getElementById('btn-present').classList.toggle('active', m==='present');
+}
+function clearAll(){
+  wordStates = wordStates.map(()=>null);
+  renderT1();
+}
+function renderT1(){
+  const el = document.getElementById('t1-text');
+  el.innerHTML = t1text.map((w,i)=>{
+    let cls = 'word';
+    if(wordStates[i]==='past') cls+=' past';
+    if(wordStates[i]==='present') cls+=' present';
+    return `<span class="${cls}" data-i="${i}">${w.w}</span> `;
+  }).join('');
+  el.querySelectorAll('.word').forEach(s=>{
+    s.addEventListener('click',()=>{
+      const i = +s.dataset.i;
+      if(!t1text[i].type) return;
+      wordStates[i] = wordStates[i]===currentMode ? null : currentMode;
+      renderT1();
+    });
+  });
+}
+function checkTask1(){
+  let ok=0, total=0;
+  t1text.forEach((w,i)=>{
+    if(!w.type) return;
+    total++;
+    if(wordStates[i]===w.type) ok++;
+  });
+  const fb = document.getElementById('t1-feedback');
+  if(ok===total){
+    fb.textContent = `✅ Perfekt! Alle ${total} Verben richtig markiert!`;
+    fb.style.color = 'var(--green)';
+  } else {
+    fb.textContent = `${ok} von ${total} Verben richtig. Schau noch mal!`;
+    fb.style.color = 'var(--red)';
+  }
+}
+renderT1();
+
+/* ═══════════════════════════════════════
+   TASK 2 — Match
+═══════════════════════════════════════ */
+const matchData = [
+  {
+    q:"Wann war dein Urlaub?",
+    correct: "Mein Urlaub war vom 3. bis 17. Juni. Es waren 14 Tage.",
+    answers:[
+      "Mein Urlaub war vom 3. bis 17. Juni. Es waren 14 Tage.",
+      "Ich war mit meiner Familie — Mama, Papa und Bruder Daniel.",
+      "Es war super! Ich habe viel gebadet und Fotos gemacht."
+    ]
+  },
+  {
+    q:"Wo warst du im Urlaub?",
+    correct: "Ich war auf den Malediven — im Ausland, am Meer.",
+    answers:[
+      "Das Wetter war sonnig und windig, 30 Grad.",
+      "Ich war auf den Malediven — im Ausland, am Meer.",
+      "Mein Urlaub war vom 3. bis 17. Juni. Es waren 14 Tage."
+    ]
+  },
+  {
+    q:"Wer war da mit dir?",
+    correct: "Ich war mit meiner Familie — Mama, Papa und Bruder Daniel.",
+    answers:[
+      "Ich war auf den Malediven — im Ausland, am Meer.",
+      "Es war schlecht — regnerisch und kalt.",
+      "Ich war mit meiner Familie — Mama, Papa und Bruder Daniel."
+    ]
+  },
+  {
+    q:"Wie war dein Urlaub?",
+    correct: "Es war super! Ich habe viel gebadet und Fotos gemacht.",
+    answers:[
+      "Es war super! Ich habe viel gebadet und Fotos gemacht.",
+      "Ich war mit meiner Familie — Mama, Papa und Bruder Daniel.",
+      "Das Wetter war sonnig und windig, 30 Grad."
+    ]
+  },
+  {
+    q:"Wie war das Wetter?",
+    correct: "Das Wetter war sonnig und windig, 30 Grad.",
+    answers:[
+      "Ich war auf den Malediven — im Ausland, am Meer.",
+      "Das Wetter war sonnig und windig, 30 Grad.",
+      "Mein Urlaub war vom 3. bis 17. Juni. Es waren 14 Tage."
+    ]
+  },
+  {
+    q:"Was hast du dort gemacht?",
+    correct: "Ich habe gebadet, bin geschwommen, habe Eis gegessen und Fotos gemacht.",
+    answers:[
+      "Ich bin nach Hause gefahren.",
+      "Ich habe gebadet, bin geschwommen, habe Eis gegessen und Fotos gemacht.",
+      "Das Wetter war sonnig und windig, 30 Grad."
+    ]
+  }
+];
+
+let matchSelected = matchData.map(()=>null);
+
+function renderMatch(){
+  const area = document.getElementById('match-area');
+  area.innerHTML = matchData.map((item,qi)=>`
+    <div style="margin-bottom:14px;">
+      <div class="match-q">${qi+1}. ${item.q}</div>
+      <div class="match-answers">
+        ${item.answers.map((a,ai)=>`
+          <div class="match-answer" id="ma-${qi}-${ai}" onclick="selectMatch(${qi},${ai})">
+            <div class="radio"></div>
+            <span>${a}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectMatch(qi,ai){
+  // deselect previous
+  matchData[qi].answers.forEach((_,i)=>{
+    const el = document.getElementById(`ma-${qi}-${i}`);
+    el.classList.remove('selected','correct','wrong');
+    el.querySelector('.radio').style.background='';
+    el.querySelector('.radio').style.borderColor='';
+  });
+  matchSelected[qi] = ai;
+  document.getElementById(`ma-${qi}-${ai}`).classList.add('selected');
+}
+
+function checkMatch(){
+  let ok=0;
+  matchData.forEach((item,qi)=>{
+    const sel = matchSelected[qi];
+    if(sel===null) return;
+    const selEl = document.getElementById(`ma-${qi}-${sel}`);
+    if(item.answers[sel]===item.correct){
+      selEl.classList.remove('selected','wrong');
+      selEl.classList.add('correct');
+      ok++;
+    } else {
+      selEl.classList.remove('selected');
+      selEl.classList.add('wrong');
+      // show correct
+      item.answers.forEach((a,ai)=>{
+        if(a===item.correct){
+          document.getElementById(`ma-${qi}-${ai}`).classList.add('correct');
+        }
+      });
+    }
+  });
+  const fb = document.getElementById('match-fb');
+  const answered = matchSelected.filter(x=>x!==null).length;
+  if(ok===matchData.length){
+    fb.textContent='✅ Ausgezeichnet! Alle Paare richtig!';
+    fb.className='feedback-row ok';
+  } else {
+    fb.textContent=`${ok} von ${matchData.length} richtig. Die richtigen Antworten sind grün markiert.`;
+    fb.className='feedback-row err';
+  }
+}
+
+renderMatch();
+
+/* ═══════════════════════════════════════
+   TASK 3 — Fill answers as Laura
+═══════════════════════════════════════ */
+const task3Qs = [
+  {
+    q:"Wann war dein Urlaub?",
+    placeholder:"vom ... bis ... Juni",
+    correct:["vom 3. bis 17. juni","3. bis 17. juni","vom 3. bis 17. juni (14 tage)","14 tage im juni","3-17 juni","3. juni bis 17. juni"]
+  },
+  {
+    q:"Wo warst du?",
+    placeholder:"auf den ...",
+    correct:["auf den malediven","malediven","im ausland am meer","am meer auf den malediven","auf den malediven (im ausland)"]
+  },
+  {
+    q:"Mit wem warst du im Urlaub?",
+    placeholder:"mit meiner ...",
+    correct:["mit meiner familie","mit mama papa und bruder","mit der familie","mit mama, papa und daniel","mit meiner familie (mama, papa, bruder daniel)"]
+  },
+  {
+    q:"Wie war dein Urlaub?",
+    placeholder:"Er war ...",
+    correct:["super","er war super","sehr gut","toll","wunderbar"]
+  },
+  {
+    q:"Wie war das Wetter?",
+    placeholder:"Es war ...",
+    correct:["sonnig und windig","sonnig windig 30 grad","es war sonnig","30 grad","sonnig, windig und 30 grad","es war sonnig und windig, 30 grad"]
+  },
+  {
+    q:"Was hast du gemacht?",
+    placeholder:"Ich habe ...",
+    correct:["gebadet geschwommen eis gegessen fotos gemacht","ich habe gebadet","gebadet","geschwommen","eis gegessen","fotos gemacht","ich habe gebadet, bin geschwommen, habe eis gegessen und fotos gemacht"]
+  }
+];
+
+function renderTask3(){
+  const area = document.getElementById('task3-area');
+  area.innerHTML = task3Qs.map((q,i)=>`
+    <div class="fill-sentence" style="margin-bottom:8px;">
+      <strong style="color:var(--accent2);">${q.q}</strong><br>
+      <input type="text" id="t3-${i}" placeholder="${q.placeholder}" style="width:100%;margin-top:6px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:.93rem;outline:none;font-family:inherit;background:#fafafa;" />
+    </div>
+  `).join('');
+}
+
+function checkTask3(){
+  let ok=0, total=task3Qs.length;
+  task3Qs.forEach((q,i)=>{
+    const inp = document.getElementById(`t3-${i}`);
+    const val = inp.value.trim().toLowerCase();
+    if(!val){ inp.style.borderColor='var(--border)'; return; }
+    const correct = q.correct.some(c=> val.includes(c) || c.includes(val));
+    inp.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+    inp.style.background  = correct ? '#e6f9e2' : '#ffe6e6';
+    if(correct) ok++;
+  });
+  const fb = document.getElementById('t3-fb');
+  if(ok===total){
+    fb.textContent='✅ Perfekt! Alle Antworten stimmen!';
+    fb.className='feedback-row ok';
+  } else {
+    fb.textContent=`${ok} von ${total} richtig. Tipp: Schau auf Lauras Profil!`;
+    fb.className='feedback-row err';
+  }
+}
+
+renderTask3();
+
+/* ═══════════════════════════════════════
+   TASK 4 — Free writing about yourself
+═══════════════════════════════════════ */
+const task4Qs = [
+  "Wann war dein letzter Urlaub?",
+  "Wo warst du?",
+  "Mit wem warst du im Urlaub?",
+  "Wie war das Wetter?",
+  "Was hast du dort gemacht?",
+  "Wie war dein Urlaub? (super / gut / schlecht ...)",
+  "Was ist dein Lieblings-Hobby?"
+];
+
+function renderTask4(){
+  const area = document.getElementById('task4-area');
+  area.innerHTML = task4Qs.map((q,i)=>`
+    <div class="free-q">${i+1}. ${q}</div>
+    <textarea placeholder="Deine Antwort auf Deutsch..."></textarea>
+  `).join('');
+}
+renderTask4();
+
+/* ═══════════════════════════════════════
+   TASK 5 — AI Prompt
+═══════════════════════════════════════ */
+const promptText =
+`Du bist ein Deutschlehrer (Niveau A1). 
+Erstelle eine kurze Hörübung (ca. 80 Wörter) für Schüler im Alter von 11–13 Jahren.
+
+Thema: Urlaub und Wetter
+
+Die Übung soll enthalten:
+- Ein kurzer Text oder Dialog (Person erzählt vom Urlaub)
+- Informationen: wo, wann, mit wem, wie war das Wetter, was hat man gemacht
+- 5 einfache Fragen mit Multiple-Choice (3 Optionen je Frage)
+- Lösungsschlüssel am Ende
+
+Vokabular: Urlaub, Meer, Ausland, Malediven, sonnig, windig, regnerisch, Grad,
+gebadet, geschwommen, Eis gegessen, Fotos gemacht, Hobby, Sport machen, GERN
+
+Bitte alles auf Deutsch ausgeben.`;
+
+document.getElementById('ai-prompt').textContent = promptText;
+
+function copyPrompt(){
+  navigator.clipboard.writeText(promptText).then(()=>{
+    const fb = document.getElementById('copy-fb');
+    fb.textContent='✅ Prompt kopiert! Füge ihn in ChatGPT oder Gemini ein.';
+    fb.className='feedback-row ok';
+    setTimeout(()=>{ fb.textContent=''; fb.className='feedback-row'; },3000);
+  });
+}
+
+/* ═══════════════════════════════════════
+   TASK 6 — Dialogue fill-in
+═══════════════════════════════════════ */
+const bankWords = [
+  "Hallo","Rostock","Gitarre","Woher","heißt","bist","spielst","klar","Tschüss","Hi"
+];
+
+const dialogueLines = [
+  {spk:"Laura:", text:"___1___!", gap:1, answer:"Hallo"},
+  {spk:"Nico:",  text:"___2___!", gap:2, answer:"Hi"},
+  {spk:"Laura:", text:"Wer ___3___ du?", gap:3, answer:"bist"},
+  {spk:"Nico:",  text:"Nico. Und du? Wie ___4___ du?", gap:4, answer:"heißt"},
+  {spk:"Laura:", text:"Ich heiße Laura."},
+  {spk:"Anna:",  text:"Und ich bin Anna. Hallo!"},
+  {spk:"Laura:", text:"___5___ kommst du?", gap:5, answer:"Woher"},
+  {spk:"Nico:",  text:"Aus ___6___.", gap:6, answer:"Rostock"},
+  {spk:"Laura:", text:"Na, dann bis bald!"},
+  {spk:"Anna:",  text:"___7___, Nico!", gap:7, answer:"Tschüss"},
+  {spk:"Laura:", text:"Du ___8___ Gitarre. Oder?", gap:8, answer:"spielst"},
+  {spk:"Nico:",  text:"Ja, ___9___!", gap:9, answer:"klar"},
+  {spk:"Laura:", text:"Super! Tschüss!"}
+];
+
+const dialogueQs = [
+  "Woher kommt Nico?",
+  "Was spielt Nico gern?",
+  "Wie heißen die zwei Mädchen?"
+];
+
+function renderWordBank(){
+  const wb = document.getElementById('word-bank');
+  wb.innerHTML = bankWords.map(w=>
+    `<div class="chip" id="chip-${w}" onclick="useChip('${w}')">${w}</div>`
+  ).join('');
+}
+
+function useChip(word){
+  // find first empty gap that matches
+  let found = false;
+  dialogueLines.forEach(line=>{
+    if(!line.gap || found) return;
+    const inp = document.getElementById(`gap-${line.gap}`);
+    if(inp && inp.value===''){
+      inp.value = word;
+      document.getElementById(`chip-${word}`).classList.add('used');
+      found=true;
+    }
+  });
+}
+
+function renderDialogue(){
+  const area = document.getElementById('dialogue-area');
+  area.innerHTML = dialogueLines.map(line=>{
+    if(!line.gap){
+      return `<div class="dialogue-line"><span class="spk">${line.spk}</span><span>${line.text}</span></div>`;
+    }
+    const parts = line.text.split(`___${line.gap}___`);
+    return `<div class="dialogue-line">
+      <span class="spk">${line.spk}</span>
+      <span>${parts[0]}<input type="text" id="gap-${line.gap}" maxlength="12" style="width:90px;" placeholder="___" />${parts[1]||''}</span>
+    </div>`;
+  }).join('');
+
+  // free questions
+  const qa = document.getElementById('dialogue-q-area');
+  qa.innerHTML = dialogueQs.map((q,i)=>`
+    <div class="free-q">${i+1}. ${q}</div>
+    <textarea placeholder="Deine Antwort..." style="min-height:44px;"></textarea>
+  `).join('');
+}
+
+function checkDialogue(){
+  let ok=0, total=0;
+  dialogueLines.forEach(line=>{
+    if(!line.gap) return;
+    total++;
+    const inp = document.getElementById(`gap-${line.gap}`);
+    if(!inp) return;
+    const val = inp.value.trim().toLowerCase();
+    if(val===line.answer.toLowerCase()){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+      ok++;
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+    }
+  });
+  const fb = document.getElementById('d-fb');
+  if(ok===total){
+    fb.textContent=`✅ Super! Alle ${total} Lücken richtig ausgefüllt!`;
+    fb.className='feedback-row ok';
+  } else {
+    fb.textContent=`${ok} von ${total} richtig. Tipp: Schau auf die Wortschatz-Box!`;
+    fb.className='feedback-row err';
+  }
+}
+
+renderWordBank();
+renderDialogue();
+
+/* ═══════════════════════════════════════
+   TASK 7 — Richtig / Falsch
+═══════════════════════════════════════ */
+const rfItems = [
+  {text:"Laura ist 12 Jahre alt.", correct:"r"},
+  {text:"Laura wohnt in Hamburg.", correct:"f"},
+  {text:"Laura war im Sommer auf den Malediven.", correct:"r"},
+  {text:"Das Wetter auf den Malediven war regnerisch.", correct:"f"},
+  {text:"Laura hat Fotos gemacht.", correct:"r"},
+  {text:"Max spielt Tennis und Basketball.", correct:"r"},
+  {text:"Max war im Urlaub in München.", correct:"f"},
+  {text:"Das Wetter in Hamburg war schön und sonnig.", correct:"f"},
+  {text:"Max ist 13 Jahre alt.", correct:"r"},
+  {text:"Max und Laura klettern beide gern.", correct:"r"}
+];
+
+let rfSelected = rfItems.map(()=>null);
+
+function renderRF(){
+  const list = document.getElementById('rf-list');
+  list.innerHTML = rfItems.map((item,i)=>`
+    <div class="rf-item">
+      <span>${i+1}. ${item.text}</span>
+      <div class="rf-btns">
+        <button class="rf-btn" id="rf-r-${i}" onclick="selectRF(${i},'r')">r ✓</button>
+        <button class="rf-btn" id="rf-f-${i}" onclick="selectRF(${i},'f')">f ✗</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectRF(i, val){
+  rfSelected[i]=val;
+  const rb = document.getElementById(`rf-r-${i}`);
+  const fb = document.getElementById(`rf-f-${i}`);
+  rb.className='rf-btn'+(val==='r'?' r-sel':'');
+  fb.className='rf-btn'+(val==='f'?' f-sel':'');
+}
+
+function checkRF(){
+  let ok=0;
+  rfItems.forEach((item,i)=>{
+    const rb = document.getElementById(`rf-r-${i}`);
+    const fb2 = document.getElementById(`rf-f-${i}`);
+    if(rfSelected[i]===null) return;
+    if(rfSelected[i]===item.correct){
+      (item.correct==='r'?rb:fb2).className='rf-btn correct';
+      ok++;
+    } else {
+      (rfSelected[i]==='r'?rb:fb2).className='rf-btn wrong';
+      // show correct
+      (item.correct==='r'?rb:fb2).className='rf-btn correct';
+    }
+  });
+  const answered = rfSelected.filter(x=>x!==null).length;
+  const fb = document.getElementById('rf-fb');
+  if(ok===rfItems.length && answered===rfItems.length){
+    fb.textContent=`✅ Perfekt! Alle ${rfItems.length} Aussagen richtig bewertet!`;
+    fb.className='feedback-row ok';
+  } else {
+    fb.textContent=`${ok} von ${answered} bewertet richtig. Richtige Antworten sind grün.`;
+    fb.className='feedback-row err';
+  }
+}
+
+renderRF();
+</script>
+</body>
+</html>
