@@ -325,8 +325,8 @@ body {
   <div class="task-header">
     <div class="task-num">3</div>
     <div>
-      <p class="task-title">Hör die Fragen. Antworte schriftlich als Laura.</p>
-      <p class="task-subtitle">Listen to the questions. Write answers as Laura using the clues below.</p>
+      <p class="task-title">Lest die Fragen. Antworte schriftlich als Laura.</p>
+      <p class="task-subtitle">Read the questions. Write answers as Laura using the clues below.</p>
     </div>
   </div>
 
@@ -701,7 +701,7 @@ function renderTask4(){
   const area = document.getElementById('task4-area');
   area.innerHTML = task4Qs.map((q,i)=>`
     <div class="free-q">${i+1}. ${q}</div>
-    <textarea placeholder="Deine Antwort auf Deutsch..."></textarea>
+    <textarea placeholder="..."></textarea>
   `).join('');
 }
 renderTask4();
