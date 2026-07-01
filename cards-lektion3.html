@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Urlaub & Hobbys — Karteikarten</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root{
+    --bg:#edf6fd; --bg2:#f3f9fe; --accent:#23a6f6; --accent2:#3b74e8;
+    --good:#7ac74f; --card:#ffffff; --txt:#2e343a;
+  }
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,var(--bg),var(--bg2));
+    color:var(--txt); min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:14px; overflow-x:hidden;
+  }
+  .wrap{width:100%; max-width:460px; display:flex; flex-direction:column; gap:12px;}
+  header h1{
+    font-size:1.9rem; margin:4px 0 0; text-align:left; font-weight:700;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  header p{ margin:2px 0; text-align:left; font-size:.78rem; color:#88a0b8;}
+  .progress-outer{
+    width:100%; height:12px; background:rgba(59,116,232,.12);
+    border-radius:20px; overflow:hidden; margin-bottom:10px;
+  }
+  .progress-inner{
+    height:100%; width:2%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:20px; transition:width .4s ease;
+  }
+  .counter{ text-align:left; font-size:.82rem; color:#5a7ab0; font-weight:600; margin-bottom:24px; }
+  .scene{ width:100%; height:340px; perspective:1200px; margin-top:4px; }
+  .card{
+    width:100%; height:100%; position:relative;
+    transform-style:preserve-3d; transition:transform .5s; cursor:pointer;
+  }
+  .card.flipped{ transform:rotateY(180deg); }
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:22px; padding:22px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:12px; box-shadow:0 12px 30px rgba(35,166,246,.16);
+  }
+  .front{ background:var(--card); color:var(--txt); border:2px solid #cde6f8; }
+  .back{ background:linear-gradient(160deg,#23a6f6,#3b74e8); color:#fff; transform:rotateY(180deg); }
+  .emoji{ font-size:3.2rem; line-height:1; }
+  .translation{ font-size:1.35rem; font-weight:700; }
+  .example{ font-size:.95rem; color:#7a90a4; font-style:italic; line-height:1.45;}
+  .back .word{ font-size:1.85rem; font-weight:800; letter-spacing:.4px; line-height:1.3; }
+  .hint-tag{
+    display:inline-block; background:rgba(35,166,246,.13);
+    color:#3b74e8; border-radius:8px; padding:2px 10px;
+    font-size:.72rem; font-weight:700; letter-spacing:.5px;
+  }
+  .blank{ display:inline-block; min-width:50px; }
+  .qlabel{ font-size:.72rem; text-transform:uppercase; letter-spacing:1px; opacity:.55; }
+  .question{ font-size:1.2rem; font-weight:700; line-height:1.4; }
+  .answer{ font-size:1.4rem; font-weight:800; line-height:1.35; }
+  .tap-hint{ font-size:.68rem; opacity:.4; margin-top:4px; }
+  .motivation{ background:linear-gradient(160deg,#7ac74f,#4ca832)!important; color:#fff; border:none!important; }
+  .motivation .emoji{ font-size:4rem; }
+  .motivation .translation{ font-size:1.3rem; }
+  .controls{ display:flex; gap:10px; justify-content:center; margin-top:22px;}
+  button{
+    flex:1; border:none; border-radius:14px; padding:13px 8px;
+    font-size:.92rem; font-weight:700; cursor:pointer; color:#fff;
+    background:rgba(59,116,232,.3); transition:transform .1s, background .2s;
+  }
+  button:active{ transform:scale(.95); }
+  button.primary{ background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+  button.shuffle{ background:rgba(35,166,246,.35); }
+  .review{ display:none; flex-direction:column; gap:14px; }
+  .review h2{ text-align:left; font-size:1rem; margin:0; color:var(--txt);}
+  .review p{ text-align:left; font-size:.82rem; color:#88a0b8; margin:0; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .mini{
+    background:var(--card); color:var(--txt); border-radius:14px;
+    text-align:center; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:6px; cursor:pointer;
+    border:3px solid #cde6f8; transition:.15s; min-height:110px; padding:10px 6px;
+  }
+  .mini .me{ font-size:1.5rem; }
+  .mini .mw{ font-size:.68rem; font-weight:700; line-height:1.2; word-break:break-word; hyphens:auto; overflow:hidden; }
+  .mini.selected{ border-color:#3b74e8; transform:scale(.97); background:#deeeff; }
+  .final{ display:none; text-align:center; padding:30px 10px; }
+  .final .big{ font-size:3.5rem; }
+  .final h2{ font-size:1.4rem; margin:14px 0 6px; color:var(--txt);}
+  .final p{ color:#88a0b8; font-size:.95rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Urlaub &amp; Hobbys</h1>
+    <p>Karteikarten · Deutsch</p>
+  </header>
+
+  <div id="study">
+    <div class="progress-outer"><div class="progress-inner" id="bar"></div></div>
+    <div class="counter">Карточка: <span id="counter">1/1</span></div>
+    <div class="scene">
+      <div class="card" id="card" onclick="flip()">
+        <div class="face front" id="front"></div>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="shuffle" onclick="shuffleDeck()">🔀 Перемешать</button>
+      <button onclick="prevCard()">← Назад</button>
+      <button class="primary" onclick="nextCard()">Дальше →</button>
+    </div>
+  </div>
+
+  <div class="review" id="review">
+    <h2>Отметь сложные карточки</h2>
+    <p>Нажми на те, которые плохо запомнились. Сет <span id="setNum">1</span></p>
+    <div class="grid" id="grid"></div>
+    <div class="controls">
+      <button class="primary" onclick="iKnowAll()">✅ Помню все</button>
+      <button onclick="nextReviewSet()">Дальше →</button>
+    </div>
+  </div>
+
+  <div class="final" id="final">
+    <div class="big">🎉</div>
+    <h2>Ausgezeichnet! Отличная работа!</h2>
+    <p id="finalMsg"></p>
+    <div class="controls" style="margin-top:20px;">
+      <button class="primary" onclick="restart()">🔁 Начать заново</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const baseCards = [
+
+  /* ====== РОД СУЩЕСТВИТЕЛЬНЫХ ====== */
+  {type:'grammar', emoji:'🔵', q:'der — какой род?', a:'Мужской род (мужской артикль).\nder Urlaub, der Tag, der Sport'},
+  {type:'grammar', emoji:'⚪', q:'das — какой род?', a:'Средний род.\ndas Wetter, das Hobby, das Internet'},
+  {type:'grammar', emoji:'🔴', q:'die — какой род?', a:'Женский род (+ все мн. числа).\ndie Woche, die Hobbys, die Wochen'},
+
+  /* ====== ТЕМА: URLAUB ====== */
+  {type:'word', emoji:'🏖️', tr:'отпуск / каникулы', word:'der Urlaub', ex:'Mein _____ war super!', tag:'der'},
+  {type:'word', emoji:'📅', tr:'день / дни', word:'der Tag / die Tage', ex:'Drei _____ am Meer.', tag:'der'},
+  {type:'word', emoji:'🗓️', tr:'неделя / недели', word:'die Woche / die Wochen', ex:'Zwei _____ im Ausland.', tag:'die'},
+  {type:'word', emoji:'✔️', tr:'был / была (= was)', word:'war', ex:'Das Wetter _____ sonnig.'},
+  {type:'word', emoji:'🗓️', tr:'с … по … июня', word:'vom … bis … Juni', ex:'Ich war _____ 3. bis 17. Juni im Urlaub.'},
+  {type:'word', emoji:'❓', tr:'где', word:'wo', ex:'_____ warst du im Urlaub?'},
+  {type:'word', emoji:'❓', tr:'когда (в момент)', word:'wenn', ex:'_____ ist es kalt, bleibt man zu Hause.'},
+  {type:'word', emoji:'❓', tr:'когда? (вопрос о времени)', word:'wann', ex:'_____ fährt ihr in Urlaub?'},
+  {type:'word', emoji:'❓', tr:'с кем?', word:'mit wem', ex:'_____ warst du im Urlaub?'},
+  {type:'word', emoji:'🌊', tr:'на море', word:'am Meer', ex:'Wir waren _____.'},
+  {type:'word', emoji:'✈️', tr:'за границей', word:'im Ausland', ex:'Ich war zwei Wochen _____.'},
+  {type:'word', emoji:'🏝️', tr:'на Мальдивах', word:'auf den Malediven', ex:'Wir waren _____.'},
+  {type:'word', emoji:'❓', tr:'как?', word:'wie', ex:'_____ war das Wetter?'},
+  {type:'word', emoji:'❓', tr:'кто?', word:'wer', ex:'_____ war dabei?'},
+  {type:'word', emoji:'👎', tr:'плохой / плохо', word:'schlecht', ex:'Das Wetter war _____.'},
+  {type:'word', emoji:'🌤️', tr:'погода', word:'das Wetter', ex:'_____ war sonnig.', tag:'das'},
+  {type:'word', emoji:'☀️', tr:'солнечный', word:'sonnig', ex:'Es war _____ und warm.'},
+  {type:'word', emoji:'💨', tr:'ветреный', word:'windig', ex:'Es war _____ am Meer.'},
+  {type:'word', emoji:'🌧️', tr:'дождливый', word:'regnerisch', ex:'Das Wetter war leider _____.'},
+  {type:'word', emoji:'🌡️', tr:'# градусов', word:'# Grad', ex:'Es waren 30 _____.'},
+  {type:'word', emoji:'❓', tr:'что?', word:'was', ex:'_____ hast du gemacht?'},
+
+  /* ====== ПРОШЕДШЕЕ ВРЕМЯ: URLAUB ====== */
+  {type:'word', emoji:'🏊', tr:'Я купался / купалась', word:'Ich habe gebadet', ex:'Am Strand _____.'},
+  {type:'word', emoji:'🤽', tr:'Я плавал / плавала', word:'Ich bin geschwommen', ex:'Ich _____ im Meer.'},
+  {type:'word', emoji:'🍦', tr:'Я ел(а) мороженое', word:'Ich habe Eis gegessen', ex:'Jeden Tag _____.'},
+  {type:'word', emoji:'📸', tr:'Я делал(а) фото', word:'Ich habe Fotos gemacht', ex:'Ich _____ viele Fotos.'},
+
+  /* ====== ГРАММАТИКА: Perfekt ====== */
+  {type:'grammar', emoji:'📖', q:'Как образовать Perfekt с «haben»?', a:'haben + Partizip II\nz.B. Ich habe gebadet. / Ich habe Eis gegessen.'},
+  {type:'grammar', emoji:'📖', q:'Как образовать Perfekt с «sein»?', a:'sein + Partizip II (глаголы движения/перемены)\nz.B. Ich bin geschwommen.'},
+  {type:'grammar', emoji:'❓', q:'Как спросить «Что ты делал(а) в отпуске?»', a:'Was hast du im Urlaub gemacht?'},
+  {type:'grammar', emoji:'🌍', q:'Как сказать «Я была 2 недели за границей»?', a:'Ich war zwei Wochen im Ausland.'},
+  {type:'grammar', emoji:'☀️', q:'Как спросить «Какая была погода?»', a:'Wie war das Wetter?'},
+  {type:'grammar', emoji:'🌡️', q:'Как сказать «Было 30 градусов»?', a:'Es waren 30 Grad.'},
+  {type:'grammar', emoji:'🗓️', q:'Как сказать «с 3 по 17 июня»?', a:'vom 3. bis 17. Juni'},
+
+  /* ====== ТЕМА: HOBBYS ====== */
+  {type:'word', emoji:'🎯', tr:'хобби (ед. ч.)', word:'das Hobby', ex:'Was ist dein _____?', tag:'das'},
+  {type:'word', emoji:'🎯', tr:'хобби (мн. ч.)', word:'die Hobbys', ex:'Ich habe viele _____.', tag:'die'},
+  {type:'word', emoji:'💬', tr:'о / про (предлог)', word:'über', ex:'Wir reden _____ Hobbys.'},
+  {type:'word', emoji:'⚽', tr:'заниматься спортом', word:'Sport machen', ex:'Ich _____ jeden Tag.'},
+  {type:'word', emoji:'❤️', tr:'Я люблю …', word:'Ich mag …', ex:'_____ Musik und Sport.'},
+  {type:'word', emoji:'🎾', tr:'играть в теннис', word:'Tennis spielen', ex:'Ich mag _____.'},
+  {type:'word', emoji:'🎸', tr:'играть на гитаре', word:'Gitarre spielen', ex:'Er mag _____.'},
+  {type:'word', emoji:'🏃', tr:'заниматься спортом', word:'Sport machen', ex:'Wir _____ zusammen.'},
+  {type:'word', emoji:'📱', tr:'ходить в ТикТок', word:'auf TikTok gehen', ex:'Ich _____ oft.'},
+  {type:'word', emoji:'🌐', tr:'сёрфить в интернете', word:'im Internet surfen', ex:'Abends _____ ich.'},
+  {type:'word', emoji:'📸', tr:'делать фото', word:'Fotos machen', ex:'Ich _____ gern.'},
+  {type:'word', emoji:'🎮', tr:'играть в видеоигры', word:'Videospiele spielen', ex:'Er _____ gern.'},
+  {type:'word', emoji:'🤔', tr:'может быть', word:'vielleicht', ex:'_____ gehe ich morgen schwimmen.'},
+  {type:'word', emoji:'🎾', tr:'Я охотно играю в теннис', word:'Ich spiele Tennis GERN', ex:'_____ — und du?'},
+  {type:'word', emoji:'💬', tr:'переписываться / чатиться', word:'chatten', ex:'Ich _____ mit Freunden.'},
+  {type:'word', emoji:'🙅', tr:'Я не люблю чатиться', word:'Ich chatte nicht GERN', ex:'_____ — ich rufe lieber an.'},
+
+  /* ====== ГРАММАТИКА: GERN / nicht gern ====== */
+  {type:'grammar', emoji:'❤️', q:'Как выразить «нравится делать»? (GERN)', a:'Verb + GERN\nIch spiele Tennis GERN.\nIch surfe GERN im Internet.'},
+  {type:'grammar', emoji:'💔', q:'Как выразить «не нравится делать»?', a:'Verb + nicht GERN\nIch chatte nicht GERN.\nIch mache nicht GERN Sport.'},
+  {type:'grammar', emoji:'❓', q:'Как спросить «Что ты любишь делать?»', a:'Was machst du gern?\nWas sind deine Hobbys?'},
+  {type:'grammar', emoji:'🎯', q:'Как ответить на «Was sind deine Hobbys?»', a:'Ich mag Tennis spielen.\nIch spiele gern Gitarre.\nIch surfe gern im Internet.'},
+  {type:'grammar', emoji:'💬', q:'Как сказать «Я люблю музыку»?', a:'Ich mag Musik. (mag = люблю/нравится)'},
+  {type:'grammar', emoji:'🤔', q:'Как употребить «vielleicht» в предложении?', a:'Vielleicht + глагол + подлежащее\nVielleicht gehe ich morgen schwimmen.'},
+
+];
+
+const motivations = [
+  {emoji:'🔥', text:'10 карточек позади! Du bist super — продолжай!'},
+  {emoji:'🚀', text:'20 карточек! Halb geschafft! Halbzeit!'},
+  {emoji:'💪', text:'30 карточек! Уже почти финиш!'},
+  {emoji:'🏆', text:'Финишная прямая! Du schaffst das!'}
+];
+const motivAfter = [10, 20, 30];
+
+let deck = [];
+let idx = 0;
+let isFlipped = false;
+let hardCards = [];
+let reviewSets = [];
+let curReviewSet = 0;
+let viewTimerStart = 0;
+let insertedMotiv = [];
+
+const frontEl = document.getElementById('front');
+const backEl  = document.getElementById('back');
+const cardEl  = document.getElementById('card');
+const bar     = document.getElementById('bar');
+const counterEl = document.getElementById('counter');
+
+function buildDeck(){
+  return baseCards.map((c,i)=>({...c, _orig:i, longViewed:false}));
+}
+
+function init(){
+  deck = buildDeck();
+  idx = 0; hardCards=[]; isFlipped=false; insertedMotiv=[];
+  document.getElementById('study').style.display='block';
+  document.getElementById('review').style.display='none';
+  document.getElementById('final').style.display='none';
+  showCard();
+}
+
+function tagHTML(tag){
+  if(!tag) return '';
+  const colors = {der:'#3b99f7', das:'#a0b0c0', die:'#e8743b'};
+  const c = colors[tag]||'#aaa';
+  return `<span style="display:inline-block;background:${c}22;color:${c};border-radius:8px;padding:1px 9px;font-size:.7rem;font-weight:700;letter-spacing:.5px;">${tag}</span>`;
+}
+
+function renderFace(c){
+  if(c.type==='motivation'){
+    frontEl.className='face front motivation';
+    backEl.className='face back motivation';
+    const html = `<div class="emoji">${c.emoji}</div><div class="translation">${c.text}</div><div class="tap-hint">нажми «Дальше»</div>`;
+    frontEl.innerHTML = html;
+    backEl.innerHTML = html;
+    return;
+  }
+  frontEl.className='face front';
+  backEl.className='face back';
+
+  if(c.type==='word'){
+    const ex = (c.ex||'').replace(/_____/g,'<span class="blank">_____</span>');
+    frontEl.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      ${c.tag ? tagHTML(c.tag) : ''}
+      <div class="translation">${c.tr}</div>
+      <div class="example">${ex}</div>
+      <div class="tap-hint">нажми, чтобы увидеть слово</div>`;
+    backEl.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="word">${c.word}</div>`;
+  } else {
+    frontEl.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="qlabel">Grammatik · Шаблон</div>
+      <div class="question">${c.q}</div>
+      <div class="tap-hint">нажми, чтобы увидеть ответ</div>`;
+    backEl.innerHTML = `
+      <div class="emoji">${c.emoji}</div>
+      <div class="answer">${c.a.replace(/\n/g,'<br>')}</div>`;
+  }
+}
+
+function showCard(){
+  isFlipped=false;
+  cardEl.classList.remove('flipped');
+  renderFace(deck[idx]);
+  updateProgress();
+  viewTimerStart = Date.now();
+}
+
+function updateProgress(){
+  const pct = Math.round(((idx+1)/deck.length)*100);
+  bar.style.width = Math.max(pct,2) + '%';
+  counterEl.textContent = (idx+1) + '/' + deck.length;
+}
+
+function flip(){
+  if(deck[idx].type==='motivation') return;
+  isFlipped = !isFlipped;
+  cardEl.classList.toggle('flipped', isFlipped);
+}
+
+function markLongView(){
+  const c = deck[idx];
+  if(c.type==='motivation') return;
+  const elapsed = Date.now() - viewTimerStart;
+  if(elapsed > 6000 && !c.longViewed){
+    c.longViewed = true;
+    if(!hardCards.find(h=>h._orig===c._orig && h.type===c.type)){
+      hardCards.push(c);
+    }
+  }
+}
+
+function nextCard(){
+  markLongView();
+  if(idx < deck.length-1){
+    idx++;
+    maybeInsertMotivation();
+    showCard();
+  } else {
+    startReview();
+  }
+}
+
+function prevCard(){
+  if(idx > 0){ idx--; showCard(); }
+}
+
+function maybeInsertMotivation(){
+  const realCount = deck.slice(0, idx+1).filter(x=>x.type!=='motivation').length;
+  const mi = motivAfter.indexOf(realCount);
+  if(mi !== -1 && !insertedMotiv.includes(mi) && deck[idx].type!=='motivation'){
+    insertedMotiv.push(mi);
+    deck.splice(idx, 0, {type:'motivation', ...motivations[mi]});
+  }
+}
+
+function shuffleDeck(){
+  const cards = deck.filter(c=>c.type!=='motivation');
+  for(let i=cards.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [cards[i],cards[j]]=[cards[j],cards[i]];
+  }
+  deck=cards; idx=0; insertedMotiv=[];
+  showCard();
+}
+
+/* ===== REVIEW ===== */
+function startReview(){
+  markLongView();
+  let pool = deck.filter(c=>c.type==='word'||c.type==='grammar');
+  const seen=new Set();
+  pool=pool.filter(c=>{
+    const k=c.type+'_'+c._orig;
+    if(seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+  reviewSets=[];
+  for(let i=0;i<pool.length;i+=8) reviewSets.push(pool.slice(i,i+8));
+  if(reviewSets.length===0){showFinal();return;}
+  curReviewSet=0;
+  window._stillHard=[];
+  document.getElementById('study').style.display='none';
+  document.getElementById('review').style.display='flex';
+  document.getElementById('final').style.display='none';
+  renderReviewSet();
+}
+
+function renderReviewSet(){
+  const grid=document.getElementById('grid');
+  document.getElementById('setNum').textContent=(curReviewSet+1)+'/'+reviewSets.length;
+  grid.innerHTML='';
+  reviewSets[curReviewSet].forEach(c=>{
+    const div=document.createElement('div');
+    div.className='mini';
+    const label=c.type==='word'?c.word:c.q;
+    div.innerHTML=`<div class="me">${c.emoji}</div><div class="mw">${label}</div>`;
+    div.onclick=()=>{
+      div.classList.toggle('selected');
+      const key=c.type+'_'+c._orig;
+      if(div.classList.contains('selected')){
+        if(!window._stillHard.find(h=>h.type+'_'+h._orig===key)) window._stillHard.push(c);
+      } else {
+        window._stillHard=window._stillHard.filter(h=>h.type+'_'+h._orig!==key);
+      }
+    };
+    grid.appendChild(div);
+  });
+}
+
+function nextReviewSet(){
+  if(curReviewSet<reviewSets.length-1){curReviewSet++;renderReviewSet();}
+  else finishReview();
+}
+
+function iKnowAll(){
+  reviewSets[curReviewSet].forEach(c=>{
+    const key=c.type+'_'+c._orig;
+    window._stillHard=window._stillHard.filter(h=>h.type+'_'+h._orig!==key);
+  });
+  nextReviewSet();
+}
+
+function finishReview(){
+  const hard=window._stillHard||[];
+  if(hard.length>0){
+    deck=hard.map(c=>({...c,longViewed:false}));
+    idx=0; isFlipped=false; insertedMotiv=[];
+    document.getElementById('study').style.display='block';
+    document.getElementById('review').style.display='none';
+    document.getElementById('final').style.display='none';
+    showCard();
+  } else showFinal();
+}
+
+/* ===== FINAL ===== */
+function showFinal(){
+  document.getElementById('study').style.display='none';
+  document.getElementById('review').style.display='none';
+  document.getElementById('final').style.display='block';
+  document.getElementById('finalMsg').textContent=
+    `Ты повторил(а) все ${baseCards.length} карточек по темам «Urlaub» и «Hobbys». `+
+    `Погода, прошедшее время, хобби и GERN — alles klar! Super gemacht! 🎉`;
+}
+
+function restart(){ init(); }
+
+init();
+</script>
+</body>
+</html>
